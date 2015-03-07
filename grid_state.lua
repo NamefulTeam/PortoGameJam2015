@@ -97,14 +97,6 @@ local function exports(width, height)
 		end
 	end
 
-	function grid:update_objects()
-		local current_object = self.first_object
-		while current_object ~= nil do
-			current_object:update(self)
-			current_object = current_object.next
-		end
-	end
-
 	function grid:in_grid(x, y)
 		return x >= 1 and y >= 1 and x <= width and y <= height
 	end
