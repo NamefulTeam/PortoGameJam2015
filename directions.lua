@@ -48,4 +48,18 @@ function exports.get_angle(direction)
 	end
 end
 
+function exports.invert(direction)
+	if direction == exports.UP then
+		return exports.DOWN
+	elseif direction == exports.DOWN then
+		return exports.UP
+	elseif direction == exports.RIGHT then
+		return exports.LEFT
+	elseif direction == exports.LEFT then
+		return exports.RIGHT
+	else
+		assert(false)
+	end
+end
+
 return exports
