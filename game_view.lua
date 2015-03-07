@@ -4,7 +4,7 @@ glitch_gen = require 'glitchGen'
 directions = require 'directions'
 glider = require 'glider'
 watcher = require 'watcher'
-stack_trace = require 'stackTrace'
+player_state = require 'player_state'
 
 background_color = {240, 240, 240}
 grid_normal_color = {180, 230, 255}
@@ -50,14 +50,16 @@ function gliderClicked(grid_state)
 	end
 end
 
-function processGoButtonClicked(grid_state)
+function processGoButtonClicked(grid_state, player_state)
 
 	grid_state:update_objects()
+
+	player_state.numberOfRounds = player_state.numberOfRounds - 1
 
 	gliderPlaced = false;
 end
 
-function exports()
+function exports(round_num)
 	local instance = {}
 
 	local block_size = grid_unit_size * grid_big_border
@@ -74,6 +76,8 @@ function exports()
 	instance.grid_state = grid_state(xcount, ycount)
 	instance.grid_state:add_object(glider(5, 5, directions.UP))
 
+	instance.player_state = player_state(round_num)
+
 	for watcherI=1,10 do
 		instance.grid_state:add_object(watcher(math.random(0,xcount), math.random(0,ycount), directions.DOWN))
 	end
@@ -83,6 +87,11 @@ function exports()
     local goButtonY = (ycount + 1.4) * grid_unit_size
     local goButtonWidth = 64
     local goButtonHeight = 32
+
+    instance.roundImage = love.graphics.newImage("placeholders/round.png")
+    local roundX = (xcount-0.7) * grid_unit_size + xoffset
+    local roundY = 0.4 * grid_unit_size
+    local roundWidth = 24
 
 	function instance:draw()
 
@@ -98,7 +107,7 @@ function exports()
 		local drawGliderY = -1
 
 		while grid_num <= xcount do
-			draw_line(grid_num, current_x, yoffset, current_x, 720 - yoffset)
+			draw_line(grid_num, current_x, yoffset, current_x, yoffset + ycount * grid_unit_size)
 
 			if mouse_x >= current_x and mouse_x < current_x + grid_unit_size then
 				drawGliderX = grid_num
@@ -111,7 +120,7 @@ function exports()
 		local current_y = yoffset
 		grid_num = 0
 		while grid_num <= ycount do
-			draw_line(grid_num, xoffset, current_y, 1280 - xoffset, current_y)
+			draw_line(grid_num, xoffset, current_y, xoffset + xcount * grid_unit_size, current_y)
 
 			if mouse_y >= current_y and mouse_y < current_y + grid_unit_size then
 				drawGliderY = grid_num
@@ -122,7 +131,11 @@ function exports()
 		end
 
 		if mouseClicked and drawGliderX >= 0 and drawGliderY >= 0 and drawGliderX < xcount and drawGliderY < ycount and 
-			not self.grid_state:get_space_at(drawGliderX+1, drawGliderY+1) and not gliderPlaced and self.grid_state:get_object_at(drawGliderX+1, drawGliderY+1) == nil then
+			not self.grid_state:get_space_at(drawGliderX+1, drawGliderY+1) and self.grid_state:get_object_at(drawGliderX+1, drawGliderY+1) == nil then
+
+			if gliderPlaced then
+				self.grid_state:delete_object(self.grid_state:get_object_at(lastGliderX, lastGliderY))
+			end
 			lastGliderX = drawGliderX + 1
 			lastGliderY = drawGliderY + 1
 			self.grid_state:add_object(glider(lastGliderX, lastGliderY, directions.DOWN))
@@ -153,8 +166,10 @@ function exports()
     	love.graphics.setColor(background_color[1], background_color[2], background_color[3])
 		love.graphics.draw(self.goButtonImage, goButtonX, goButtonY)
 
-		-- Stack trace stuff
-		stack_trace.draw_stack(self.grid_state, love.window.getWidth()-250,200,love.mouse.getX(), love.mouse.getY())
+		-- rounds
+		for i = 1, self.player_state.numberOfRounds, 1 do
+			love.graphics.draw(self.roundImage, roundX - (roundWidth+2)*(i-1),roundY)
+		end
 	end
 
 	function instance:update()
@@ -167,7 +182,7 @@ function exports()
 		if mouseClicked and not lastFrameMouseClicked then
 
 			if mouse_x > goButtonX and mouse_x <= goButtonX + goButtonWidth and mouse_y > goButtonY and mouse_y <= goButtonY + goButtonHeight then
-				processGoButtonClicked(self.grid_state)
+				processGoButtonClicked(self.grid_state, self.player_state)
 			else if gliderPlaced then
 					local posX = (lastGliderX-1) * grid_unit_size + xoffset
 					local posY = (lastGliderY-1) * grid_unit_size + yoffset
