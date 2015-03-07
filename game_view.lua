@@ -130,6 +130,8 @@ function exports(round_num)
 			grid_num = grid_num + 1
 		end
 
+		stack_trace.draw_stack(self.grid_state, love.window.getWidth()-250, 100,love.mouse.getX(),love.mouse.getY(),xoffset,yoffset)
+
 		if mouseClicked and drawGliderX >= 0 and drawGliderY >= 0 and drawGliderX < xcount and drawGliderY < ycount and 
 			not self.grid_state:get_space_at(drawGliderX+1, drawGliderY+1) and self.grid_state:get_object_at(drawGliderX+1, drawGliderY+1) == nil then
 
@@ -170,8 +172,6 @@ function exports(round_num)
 		for i = 1, self.player_state.numberOfRounds, 1 do
 			love.graphics.draw(self.roundImage, roundX - (roundWidth+2)*(i-1),roundY)
 		end
-
-		stack_trace.draw_stack(self.grid_state, love.window.getWidth()-250, 100,love.mouse.getX(),love.mouse.getY())
 	end
 
 	function instance:update()
