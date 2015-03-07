@@ -60,6 +60,8 @@ function exports(round_num)
 	local yoffset = yoffsets / 2 + 20
 	local ycount = (available_height - yoffsets) / grid_unit_size
 
+	local gliderPlaced = false
+
 	instance.grid_state = grid_state(xcount, ycount)
 	instance.grid_state.mode = MODE_SIGNAL
 
@@ -95,7 +97,7 @@ function exports(round_num)
     local roundWidth = 24
 
     local signalImage = love.graphics.newImage('header/signal.png')
-    local evolveImage = love.graphics.newImage('header/evolve.png')
+    local processingImage = love.graphics.newImage('header/processing.png')
 
 	function instance:draw()
 		love.graphics.setColor(255,255,255)
@@ -104,7 +106,7 @@ function exports(round_num)
 		if instance.grid_state.mode == MODE_SIGNAL then
 			love.graphics.draw(signalImage, xoffset, 17)
 		else
-			love.graphics.draw(evolveImage, xoffset, 17)
+			love.graphics.draw(processingImage, xoffset, 17)
 		end
 
 		-- Draw Grid
@@ -170,17 +172,13 @@ function exports(round_num)
 	end
 
 	function instance:update()
-		if self.player_state.gameOver then
-			active_screen.set(game_over_view())
-			return
-		end
+		mouse_x, mouse_y = love.mouse.getPosition()
+
+		local wasClicked = mouseClicked
+		mouseClicked = love.mouse.isDown("l")
 
 		if self.grid_state.mode == MODE_SIGNAL then
-			mouse_x, mouse_y = love.mouse.getPosition()
-
-			lastFrameMouseClicked = mouseClicked
-			mouseClicked = love.mouse.isDown("l")
-
+		
 			if mouseClicked then
 
 				target_x = math.floor((mouse_x - xoffset) / grid_unit_size) + 1
@@ -191,12 +189,15 @@ function exports(round_num)
 
 					if gliderPlaced then
 						if lastGlider.x == target_x and lastGlider.y == target_y and not lastFrameMouseClicked then
+							print('rotate')
 							gliderClicked()
 						elseif self.grid_state:get_object_at(target_x, target_y) == nil then
+							print('move')
 							lastGlider.x = target_x
 							lastGlider.y = target_y
 						end
-					elseif self.grid_state:get_object_at(target_x, target_y) == nil then
+					elseif self.grid_state:get_object_at(target_x, target_y) == nil and not lastFrameMouseClicked then
+						print('place')
 						lastGlider = glider(target_x, target_y, directions.DOWN)
 						self.grid_state:add_object(lastGlider)
 						gliderPlaced = true
@@ -204,6 +205,11 @@ function exports(round_num)
 				elseif mouse_x > goButtonX and mouse_x <= goButtonX + goButtonWidth and mouse_y > goButtonY and mouse_y <= goButtonY + goButtonHeight and not lastFrameMouseClicked then
 					processGoButtonClicked(self.grid_state, self.player_state)
 				end
+			end
+
+			if self.player_state.gameOver then
+				active_screen.set(game_over_view())
+				return
 			end
 		else
 			if tick_time >= 3 then
@@ -235,6 +241,8 @@ function exports(round_num)
 				tick_time = tick_time + 1
 			end
 		end
+
+		lastFrameMouseClicked = mouseClicked
 
 		glitchUpdateTimer = glitchUpdateTimer + 1/60
 	end
