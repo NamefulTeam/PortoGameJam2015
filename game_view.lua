@@ -15,10 +15,12 @@ grid_big_border = 5
 mouse_x = 0;
 mouse_y = 0;
 mouseClicked = false;
+lastFrameMouseClicked = false;
 
 -- glider variables
 rectanglesToDraw = {}
 numberOfGliders = 0
+gliderPlaced = false
 
 -- grid state
 
@@ -34,6 +36,13 @@ function draw_line(grid_num, x1, y1, x2, y2)
 	love.graphics.setLineWidth(width)
 	love.graphics.setColor(color[1], color[2], color[3])
 	love.graphics.line(x1, y1, x2, y2)
+end
+
+function processGoButtonClicked(grid_state)
+
+	grid_state:update_objects()
+
+	gliderPlaced = false;
 end
 
 function exports()
@@ -54,6 +63,10 @@ function exports()
 
 
     instance.goButtonImage = love.graphics.newImage( "placeholders/goButton.png" )
+    local goButtonX = (xcount - 2) * grid_unit_size + xoffset
+    local goButtonY = (ycount + 1.4) * grid_unit_size
+    local goButtonWidth = 64
+    local goButtonHeight = 32
 
 	function instance:draw()
 		love.graphics.setColor(background_color[1], background_color[2], background_color[3])
@@ -63,6 +76,7 @@ function exports()
 		local current_x = xoffset
 		local grid_num = 0
 
+		-- glider
 		local drawGliderX = -1
 		local drawGliderY = -1
 
@@ -90,8 +104,10 @@ function exports()
 			grid_num = grid_num + 1
 		end
 
-		if mouseClicked and drawGliderX >= 0 and drawGliderY >= 0 and drawGliderX < xcount and drawGliderY < ycount then
+		if mouseClicked and drawGliderX >= 0 and drawGliderY >= 0 and drawGliderX < xcount and drawGliderY < ycount and 
+			not self.grid_state:get_space_at(drawGliderX+1, drawGliderY+1) and not gliderPlaced then
 			self.grid_state:add_object(glider(drawGliderX + 1, drawGliderY + 1, directions.DOWN))
+			gliderPlaced = true
 		end
 
 		if glitchUpdateTimer > 0.2 then
@@ -118,14 +134,20 @@ function exports()
 		self.grid_state:update_objects()
 
     	-- Button Go to Evolution mode
-		love.graphics.draw(self.goButtonImage, (xcount - 2) * grid_unit_size + xoffset, (ycount+1.4) * grid_unit_size)
+		love.graphics.draw(self.goButtonImage, goButtonX, goButtonY)
 	end
 
 	function instance:update()
 
 		mouse_x, mouse_y = love.mouse.getPosition()
 
-		mouseClicked = love.mouse.isDown("l") 
+		lastFrameMouseClicked = mouseClicked
+		mouseClicked = love.mouse.isDown("l")
+
+		if mouseClicked and mouse_x > goButtonX and mouse_x <= goButtonX + goButtonWidth and mouse_y > goButtonY and mouse_y <= goButtonY + goButtonHeight and 
+			not lastFrameMouseClicked then
+			processGoButtonClicked(self.grid_state)
+		end
 
 		glitchUpdateTimer = glitchUpdateTimer + 1/60
 	end

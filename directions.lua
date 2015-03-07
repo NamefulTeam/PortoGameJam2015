@@ -18,6 +18,7 @@ function exports.get_x_diff(direction)
 	elseif direction == exports.RIGHT then
 		return 1
 	else
+		assert(direction == exports.UP or direction == exports.DOWN)
 		return 0
 	end
 end
@@ -28,7 +29,22 @@ function exports.get_y_diff(direction)
 	elseif direction == exports.DOWN then
 		return 1
 	else
+		assert(direction == exports.LEFT or direction == exports.RIGHT)
 		return 0
+	end
+end
+
+function exports.get_angle(direction)
+	if direction == exports.RIGHT then
+		return 0
+	elseif direction == exports.LEFT then
+		return math.pi
+	elseif direction == exports.UP then
+		return 3 * math.pi / 2
+	elseif direction == exports.DOWN then
+		return math.pi / 2
+	else
+		assert(false)
 	end
 end
 
