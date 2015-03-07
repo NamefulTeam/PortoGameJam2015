@@ -5,7 +5,7 @@ game_view = require 'game_view'
 function exports(numberOfRounds)
 	local instance = {}
 
-	local background = love.graphics.newImage('background/background_light.png')
+	local background = love.graphics.newImage('background/title_background.png')
 	local newGameButton = love.graphics.newImage('initial_menu/new_game.png')
 	local endGameButton = love.graphics.newImage('initial_menu/exit.png')
 	local newGameX = 470
