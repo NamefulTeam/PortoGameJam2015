@@ -47,6 +47,10 @@ local function exports(width, height)
 		end
 	end
 
+	function grid:in_grid(x, y)
+		return x >= 1 and y >= 1 and x <= width and y <= height
+	end
+
 	return grid
 end
 
