@@ -60,7 +60,7 @@ function exports()
 	local ycount = (720 - yoffsets) / grid_unit_size
 
 	instance.grid_state = grid_state(xcount, ycount)
-
+	instance.grid_state:add_object(glider(5, 5, directions.UP))
 
     instance.goButtonImage = love.graphics.newImage( "placeholders/goButton.png" )
     local goButtonX = (xcount - 2) * grid_unit_size + xoffset
