@@ -4,6 +4,7 @@ glitch_gen = require 'glitchGen'
 directions = require 'directions'
 glider = require 'glider'
 watcher = require 'watcher'
+stack_trace = require 'stackTrace'
 
 background_color = {240, 240, 240}
 grid_normal_color = {180, 230, 255}
@@ -151,6 +152,9 @@ function exports()
     	-- Button Go to Evolution mode
     	love.graphics.setColor(background_color[1], background_color[2], background_color[3])
 		love.graphics.draw(self.goButtonImage, goButtonX, goButtonY)
+
+		-- Stack trace stuff
+		stack_trace.draw_stack(self.grid_state, love.window.getWidth()-250,200,love.mouse.getX(), love.mouse.getY())
 	end
 
 	function instance:update()
