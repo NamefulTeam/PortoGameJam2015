@@ -48,6 +48,9 @@ function exports()
 
 	instance.grid_state = grid_state(xcount, ycount)
 
+
+    instance.goButtonImage = love.graphics.newImage( "placeholders/goButton.png" )
+
 	function instance:draw()
 		love.graphics.setColor(background_color[1], background_color[2], background_color[3])
 		love.graphics.rectangle('fill', 0, 0, 1280, 720)
@@ -99,6 +102,9 @@ function exports()
     	end
 
 		self.grid_state:update_objects()
+
+    	-- Button Go to Evolution mode
+		love.graphics.draw(self.goButtonImage, (xcount - 2) * grid_unit_size + xoffset, (ycount+1.4) * grid_unit_size)
 	end
 
 	function instance:update()
