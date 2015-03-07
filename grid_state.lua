@@ -1,4 +1,4 @@
-function exports(width, height)
+local function exports(width, height)
 	local grid = {}
 	grid.data = {}
 	grid.objects = {}
@@ -19,6 +19,10 @@ function exports(width, height)
 
 	function grid:set_space_at(x, y, value)
 		self.data[index(x, y)] = value
+	end
+
+	function grid:add_object(object)
+		table.insert(self.objects, object)
 	end
 
 	function grid:get_object_at(x, y)
