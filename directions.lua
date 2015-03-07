@@ -62,4 +62,18 @@ function exports.invert(direction)
 	end
 end
 
+function exports.rotate_clockwise(direction)
+	if direction == exports.UP then
+		return exports.RIGHT
+	elseif direction == exports.RIGHT then
+		return exports.DOWN
+	elseif direction == exports.DOWN then
+		return exports.LEFT
+	elseif direction == exports.LEFT then
+		return exports.UP
+	else
+		assert(false)
+	end
+end
+
 return exports

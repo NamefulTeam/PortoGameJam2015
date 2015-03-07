@@ -3,6 +3,7 @@ grid_state = require 'grid_state'
 glitch_gen = require 'glitchGen'
 directions = require 'directions'
 glider = require 'glider'
+watcher = require 'watcher'
 
 background_color = {240, 240, 240}
 grid_normal_color = {180, 230, 255}
@@ -69,6 +70,9 @@ function exports()
 
 	instance.grid_state = grid_state(xcount, ycount)
 
+	for watcherI=1,10 do
+		instance.grid_state:add_object(watcher(math.random(0,xcount), math.random(0,ycount), directions.DOWN))
+	end
 
     instance.goButtonImage = love.graphics.newImage( "placeholders/goButton.png" )
     local goButtonX = (xcount - 2) * grid_unit_size + xoffset
