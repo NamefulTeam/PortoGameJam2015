@@ -29,6 +29,8 @@ local function exports(x, y, direction)
 			elseif found_object.type == 'glider' then
 				-- Blow up
 				self:explode(grid)
+			elseif found_object.type == 'watcher' then
+				grid:delete_object(self)
 			end
 		else
 			self.direction = directions.invert(self.direction)
@@ -53,7 +55,7 @@ local function exports(x, y, direction)
 
 	function instance:suffer_explosion(grid)
 		grid:delete_object(self)
-		grid:set_space_at(self.x, self.y, true)
+		self:explode(grid)
 	end
 
 	function instance:draw(offset_x, offset_y)
