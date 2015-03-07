@@ -1,6 +1,8 @@
 -- imports
 grid_state = require 'grid_state'
 glitch_gen = require 'glitchGen'
+directions = require 'directions'
+glider = require 'glider'
 
 background_color = {240, 240, 240}
 grid_normal_color = {180, 230, 255}
@@ -50,6 +52,9 @@ function exports()
 
 	instance.grid_state = grid_state(xcount, ycount)
 
+
+    instance.goButtonImage = love.graphics.newImage( "placeholders/goButton.png" )
+
 	function instance:draw()
 		love.graphics.setColor(background_color[1], background_color[2], background_color[3])
 		love.graphics.rectangle('fill', 0, 0, 1280, 720)
@@ -86,13 +91,7 @@ function exports()
 		end
 
 		if mouseClicked and drawGliderX >= 0 and drawGliderY >= 0 and drawGliderX < xcount and drawGliderY < ycount then
-			local pos = {}
-			local posX = "x"
-			local posY = "y"
-			pos[posX] = drawGliderX * grid_unit_size + xoffset
-			pos[posY] = drawGliderY * grid_unit_size + yoffset
-			numberOfGliders = numberOfGliders + 1
-			rectanglesToDraw[numberOfGliders] = pos
+			self.grid_state:add_object(glider(drawGliderX + 1, drawGliderY + 1, directions.DOWN))
 		end
 
 		if glitchUpdateTimer > 0.2 then
@@ -103,6 +102,22 @@ function exports()
 			glitch_gen.drawGlich(rect["x"], rect["y"], xcount, glitchUpdate)
     	end
 		glitchUpdate = false	
+
+		self.grid_state:draw_objects(xoffset, yoffset)
+
+		for x = 1, xcount, 1 do
+			for y = 1, ycount, 1 do
+				if self.grid_state:get_space_at(x, y) then
+      				love.graphics.setColor(255,0,0)
+					love.graphics.rectangle('fill', (x-1) * grid_unit_size + xoffset, (y-1) * grid_unit_size + yoffset, grid_unit_size, grid_unit_size)
+				end
+			end
+    	end
+
+		self.grid_state:update_objects()
+
+    	-- Button Go to Evolution mode
+		love.graphics.draw(self.goButtonImage, (xcount - 2) * grid_unit_size + xoffset, (ycount+1.4) * grid_unit_size)
 	end
 
 	function instance:update()
