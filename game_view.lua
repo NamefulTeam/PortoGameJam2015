@@ -47,22 +47,6 @@ function exports(round_num)
 
 	local mouseClicked = false;
 	local lastFrameMouseClicked = true;
-
-	local mode = MODE_SIGNAL
-
-	local function gliderClicked()
-		lastGlider.direction = directions.rotate_clockwise(lastGlider.direction)
-	end
-
-	local function processGoButtonClicked(grid_state, player_state)
-		player_state:endRound()
-
-		gliderPlaced = false
-		mode = MODE_EVOLUTION
-		tick_time = 0
-		evolution_phase = 1
-	end
-
 	local block_size = grid_unit_size * grid_big_border
 	available_width = 1280 - 250
 	local xoffsets = available_width % block_size
@@ -76,11 +60,25 @@ function exports(round_num)
 	local ycount = (720 - yoffsets) / grid_unit_size
 
 	instance.grid_state = grid_state(xcount, ycount)
+	instance.grid_state.mode = MODE_SIGNAL
+
+	local function gliderClicked()
+		lastGlider.direction = directions.rotate_clockwise(lastGlider.direction)
+	end
+
+	local function processGoButtonClicked(grid_state, player_state)
+		player_state:endRound()
+
+		gliderPlaced = false
+		instance.grid_state.mode = MODE_EVOLUTION
+		tick_time = 0
+		evolution_phase = 1
+	end
 
 	instance.player_state = player_state(round_num)
 
 	for watcherI=1,10 do
-		instance.grid_state:add_object(watcher(math.random(0,xcount), math.random(0,ycount), directions.DOWN))
+		instance.grid_state:add_object(watcher(math.random(1,xcount), math.random(1,ycount), directions.DOWN))
 	end
 
     instance.goButtonImage = love.graphics.newImage( "placeholders/goButton.png" )
@@ -149,7 +147,7 @@ function exports(round_num)
 
 		glitchUpdate = false	
 
-		if mode == MODE_SIGNAL then
+		if self.grid_state.mode == MODE_SIGNAL then
 	    	-- Button Go to Evolution mode
 	    	love.graphics.setColor(255, 255, 255)
 			love.graphics.draw(self.goButtonImage, goButtonX, goButtonY)
@@ -167,7 +165,7 @@ function exports(round_num)
 			return
 		end
 
-		if mode == MODE_SIGNAL then
+		if self.grid_state.mode == MODE_SIGNAL then
 			mouse_x, mouse_y = love.mouse.getPosition()
 
 			lastFrameMouseClicked = mouseClicked
@@ -201,7 +199,7 @@ function exports(round_num)
 			if tick_time >= 3 then
 				tick_time = 0
 				if evolution_phase > evolution_phases then
-					mode = MODE_SIGNAL
+					self.grid_state.mode = MODE_SIGNAL
 					current_object = nil
 				else
 					if current_object == nil then
