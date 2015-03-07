@@ -126,7 +126,7 @@ function exports(round_num)
 			grid_num = grid_num + 1
 		end
 
-		stack_trace.draw_stack(self.grid_state, love.window.getWidth()-250, 100,love.mouse.getX(),love.mouse.getY(),xoffset,yoffset)
+		stack_trace.draw_stack(self.grid_state, love.window.getWidth()-250, 100,love.mouse.getX(),love.mouse.getY(),xoffset,yoffset,current_object)
 
 		if glitchUpdateTimer > 0.2 then
 			glitchUpdate = true
