@@ -217,6 +217,14 @@ function exports(round_num)
 					end
 					if current_object ~= nil then
 						current_object:update(self.grid_state)
+						--erase cycle
+						local obj = self.grid_state.first_object
+						while obj ~= nil do
+							if obj.isDead then
+								self.grid_state:delete_object(obj)
+							end
+							obj = obj.next
+						end
 						current_object = current_object.next
 						if current_object == nil then
 							evolution_phase = evolution_phase + 1

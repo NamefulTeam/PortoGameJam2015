@@ -8,6 +8,7 @@ local function exports(x, y, direction)
 	instance.x = x
 	instance.y = y
 	instance.direction = direction
+	instance.isDead = false
 
 	instance.image = love.graphics.newImage('placeholders/glider.png')
 	instance.quad = love.graphics.newQuad(0, 0, 32, 32, 32, 32)
@@ -33,7 +34,9 @@ local function exports(x, y, direction)
 				grid:delete_object(self)
 			end
 		else
-			self.direction = directions.invert(self.direction)
+			grid:set_space_at(self.x, self.y, true)
+			--grid:delete_object(self)
+			instance.isDead = true
 		end
 	end
 
@@ -44,7 +47,7 @@ local function exports(x, y, direction)
 				local y = self.y + dy
 
 				local object = grid:get_object_at(x, y)
-				if object ~= nil then
+				if object ~= nil and not object.isDead then
 					object:suffer_explosion(grid)
 				else
 					grid:set_space_at(x, y, true)
@@ -54,7 +57,8 @@ local function exports(x, y, direction)
 	end
 
 	function instance:suffer_explosion(grid)
-		grid:delete_object(self)
+		--grid:delete_object(self)
+		instance.isDead = true
 		self:explode(grid)
 	end
 

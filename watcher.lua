@@ -9,6 +9,7 @@ local function exports(x, y, direction)
 	instance.x = x
 	instance.y = y
 	instance.direction = direction
+	instance.isDead = false
 
 	instance.image = love.graphics.newImage('placeholders/watcher.png')
 	instance.quad = love.graphics.newQuad(0, 0, 32, 32, 32, 32)
@@ -47,7 +48,8 @@ local function exports(x, y, direction)
 			end
 			local object = grid:get_object_at(next_x, next_y)
 			if object and object.type == 'glider' then
-				grid:delete_object(object)
+				--grid:delete_object(object)
+				instance.isDead = true
 				self.x = next_x
 				self.y = next_y
 			elseif object and object.type == 'watcher' then
