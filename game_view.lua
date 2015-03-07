@@ -97,7 +97,7 @@ function exports()
 		local drawGliderY = -1
 
 		while grid_num <= xcount do
-			draw_line(grid_num, current_x, yoffset, current_x, 720 - yoffset)
+			draw_line(grid_num, current_x, yoffset, current_x, yoffset + ycount * grid_unit_size)
 
 			if mouse_x >= current_x and mouse_x < current_x + grid_unit_size then
 				drawGliderX = grid_num
@@ -110,7 +110,7 @@ function exports()
 		local current_y = yoffset
 		grid_num = 0
 		while grid_num <= ycount do
-			draw_line(grid_num, xoffset, current_y, 1280 - xoffset, current_y)
+			draw_line(grid_num, xoffset, current_y, xoffset + xcount * grid_unit_size, current_y)
 
 			if mouse_y >= current_y and mouse_y < current_y + grid_unit_size then
 				drawGliderY = grid_num

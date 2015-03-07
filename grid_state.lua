@@ -54,6 +54,25 @@ local function exports(width, height)
 		end
 	end
 
+	function grid:replace_object(old_object, new_object)
+		assert(new_object.prev == nil)
+		assert(new_object.next == nil)
+
+		if grid.first_object == old_object then
+			grid.first_object = new_object
+		end
+		if grid.last_object == old_object then
+			grid.last_object = new_object
+		end
+
+		if old_object.prev ~= nil then
+			old_object.prev.next = new_object
+		end
+		if old_object.next ~= nil then
+			old_object.next.prev = new_object
+		end
+	end
+
 	function grid:get_object_at(x, y)
 		local current_object = self.first_object
 		while current_object ~= nil do
