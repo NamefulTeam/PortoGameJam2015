@@ -4,7 +4,7 @@ local function exports(x, y, direction)
 	assert(directions.is_direction(direction))
 
 	local instance = {}
-
+	instance.type = 'watcher'
 	instance.x = x
 	instance.y = y
 	instance.direction = direction
@@ -13,13 +13,31 @@ local function exports(x, y, direction)
 	instance.quad = love.graphics.newQuad(0, 0, 32, 32, 32, 32)
 
 	function instance:update(grid)
+		assert(grid:in_grid(self.x, self.y))
+
+		--find dirty cells
+		if grid:get_space_at(self.x+1, self.y) then
+			self.direction = directions.RIGHT
+		elseif grid:get_space_at(self.x-1, self.y) then
+			self.direction = directions.LEFT
+		elseif grid:get_space_at(self.x, self.y+1) then
+			self.direction = directions.DOWN
+		elseif grid:get_space_at(self.x, self.y-1) then
+			self.direction = directions.UP
+		end
+
 		local next_x = self.x + directions.get_x_diff(self.direction)
 		local next_y = self.y + directions.get_y_diff(self.direction)
 
-		grid:set_space_at(self.x, self.y, true)
-
-		self.x = next_x
-		self.y = next_y
+		if grid:in_grid(next_x, next_y) then
+			if grid:get_space_at(next_x, next_y) then
+				grid:set_space_at(next_x, next_y, false)
+			end
+			self.x = next_x
+			self.y = next_y
+		else
+			self.direction = directions.invert(self.direction)
+		end
 	end
 
 	function instance:draw(offset_x, offset_y)

@@ -4,7 +4,7 @@ local function exports(x, y, direction)
 	assert(directions.is_direction(direction))
 
 	local instance = {}
-
+	instance.type = 'glider'
 	instance.x = x
 	instance.y = y
 	instance.direction = direction
@@ -19,13 +19,25 @@ local function exports(x, y, direction)
 		local next_y = self.y + directions.get_y_diff(self.direction)
 
 		if grid:in_grid(next_x, next_y) and not grid:get_space_at(next_x, next_y) then
-			grid:set_space_at(self.x, self.y, true)
 
-			self.x = next_x
-			self.y = next_y
+			local found_object = grid:get_object_at(next_x, next_y)
+			if found_object == nil then
+				grid:set_space_at(self.x, self.y, true)
+
+				self.x = next_x
+				self.y = next_y
+			elseif found_object.type == 'glider' then
+				-- Blow up
+				self:explode(grid, found_object)
+			end
 		else
 			self.direction = directions.invert(self.direction)
 		end
+	end
+
+	function instance:explode(grid, other_object)
+		grid:delete_object(self)
+		grid:delete_object(other_object)
 	end
 
 	function instance:draw(offset_x, offset_y)

@@ -1,7 +1,8 @@
 local function exports(width, height)
 	local grid = {}
 	grid.data = {}
-	grid.objects = {}
+	grid.first_object = nil
+	grid.last_object = nil
 
 	function index(x, y)
 		return (y - 1) * width + x
@@ -22,28 +23,62 @@ local function exports(width, height)
 	end
 
 	function grid:add_object(object)
-		table.insert(self.objects, object)
+		assert(object.next == nil)
+		assert(object.prev == nil)
+		if grid.first_object == nil then
+			assert(grid.last_object == nil)
+
+			grid.first_object = object
+			grid.last_object = object
+		else
+			assert(grid.last_object.next == nil)
+
+			grid.last_object.next = object
+			object.prev = grid.last_object
+
+			grid.last_object = object
+		end
+	end
+
+	function grid:delete_object(object)
+		if grid.first_object == object then
+			grid.first_object = object.next
+		else
+			object.prev.next = object.next
+		end
+
+		if grid.last_object == object then
+			grid.last_object = object.prev
+		else
+			object.next.prev = object.prev
+		end
 	end
 
 	function grid:get_object_at(x, y)
-		for key, value in pairs(self.objects) do
-			if value.x == x and value.y == y then
-				return key, value
+		local current_object = self.first_object
+		while current_object ~= nil do
+			if current_object.x == x and current_object.y == y then
+				return current_object
 			end
+			current_object = current_object.next
 		end
 
 		return nil
 	end
 
 	function grid:draw_objects(offset_x, offset_y)
-		for key, value in pairs(self.objects) do
-			value:draw(offset_x, offset_y)
+		local current_object = self.first_object
+		while current_object ~= nil do
+			current_object:draw(offset_x, offset_y)
+			current_object = current_object.next
 		end
 	end
 
 	function grid:update_objects()
-		for key, value in pairs(self.objects) do
-			value:update(self)
+		local current_object = self.first_object
+		while current_object ~= nil do
+			current_object:update(self)
+			current_object = current_object.next
 		end
 	end
 
