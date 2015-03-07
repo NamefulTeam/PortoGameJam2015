@@ -121,7 +121,11 @@ function exports()
 		end
 
 		if mouseClicked and drawGliderX >= 0 and drawGliderY >= 0 and drawGliderX < xcount and drawGliderY < ycount and 
-			not self.grid_state:get_space_at(drawGliderX+1, drawGliderY+1) and not gliderPlaced and self.grid_state:get_object_at(drawGliderX+1, drawGliderY+1) == nil then
+			not self.grid_state:get_space_at(drawGliderX+1, drawGliderY+1) and self.grid_state:get_object_at(drawGliderX+1, drawGliderY+1) == nil then
+
+			if gliderPlaced then
+				self.grid_state:delete_object(self.grid_state:get_object_at(lastGliderX, lastGliderY))
+			end
 			lastGliderX = drawGliderX + 1
 			lastGliderY = drawGliderY + 1
 			self.grid_state:add_object(glider(lastGliderX, lastGliderY, directions.DOWN))
