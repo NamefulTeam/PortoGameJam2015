@@ -1,6 +1,6 @@
 -- imports
 active_screen = require 'active_screen'
-game_view = require 'game_view'
+initial_menu_view = require 'initial_menu_view'
 
 width = 1280
 height = 720
@@ -9,7 +9,7 @@ numberOfRounds = 5
 function love.load()
 	love.window.setMode(width, height, { fullscreen = true })
 
-	active_screen.set(game_view(numberOfRounds))
+	active_screen.set(initial_menu_view(numberOfRounds))
 end
 
 function love.draw()
