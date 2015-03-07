@@ -6,7 +6,6 @@ glider = require 'glider'
 watcher = require 'watcher'
 player_state = require 'player_state'
 
-background_color = {240, 240, 240}
 grid_normal_color = {180, 230, 255}
 grid_block_color = {100, 200, 250}
 grid_line_width = 0.5
@@ -63,18 +62,18 @@ function exports(round_num)
 	local instance = {}
 
 	local block_size = grid_unit_size * grid_big_border
-	local xoffsets = 1280 % block_size
+	available_width = 1280 - 250
+	local xoffsets = available_width % block_size
 	if xoffsets == 0 then
 		xoffsets = block_size
 	end
 	local xoffset = xoffsets / 2
-	local xcount = (1280 - xoffsets) / grid_unit_size
+	local xcount = (available_width - xoffsets) / grid_unit_size
 	local yoffsets = 720 % block_size
 	local yoffset = yoffsets / 2
 	local ycount = (720 - yoffsets) / grid_unit_size
 
 	instance.grid_state = grid_state(xcount, ycount)
-	instance.grid_state:add_object(glider(5, 5, directions.UP))
 
 	instance.player_state = player_state(round_num)
 
@@ -88,6 +87,7 @@ function exports(round_num)
     local goButtonWidth = 64
     local goButtonHeight = 32
 
+    local background = love.graphics.newImage('background/background_light.png')
     instance.roundImage = love.graphics.newImage("placeholders/round.png")
     local roundX = (xcount-0.7) * grid_unit_size + xoffset
     local roundY = 0.4 * grid_unit_size
@@ -95,8 +95,7 @@ function exports(round_num)
 
 	function instance:draw()
 
-		love.graphics.setColor(background_color[1], background_color[2], background_color[3])
-		love.graphics.rectangle('fill', 0, 0, 1280, 720)
+		love.graphics.draw(background, 0, 0)
 
 		-- Draw Grid
 		local current_x = xoffset
@@ -163,7 +162,7 @@ function exports(round_num)
 		glitchUpdate = false	
 
     	-- Button Go to Evolution mode
-    	love.graphics.setColor(background_color[1], background_color[2], background_color[3])
+    	love.graphics.setColor(255, 255, 255)
 		love.graphics.draw(self.goButtonImage, goButtonX, goButtonY)
 
 		-- rounds
