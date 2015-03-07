@@ -1,5 +1,6 @@
 -- imports
 grid_state = require 'grid_state'
+glitch_gen = require 'glitchGen'
 directions = require 'directions'
 glider = require 'glider'
 
@@ -22,6 +23,9 @@ numberOfGliders = 0
 gliderPlaced = false
 
 -- grid state
+
+-- visual glitch state
+glitchUpdateTimer = 0.5
 
 function draw_line(grid_num, x1, y1, x2, y2)
 	local is_main = grid_num % grid_big_border == 0
@@ -101,6 +105,15 @@ function exports()
 			gliderPlaced = true
 		end
 
+		if glitchUpdateTimer > 0.2 then
+			glitchUpdate = true
+			glitchUpdateTimer = glitchUpdateTimer - 0.2
+		end
+		for i,rect in ipairs(rectanglesToDraw) do
+			glitch_gen.drawGlich(rect["x"], rect["y"], xcount, glitchUpdate)
+    	end
+		glitchUpdate = false	
+
 		self.grid_state:draw_objects(xoffset, yoffset)
 
 		for x = 1, xcount, 1 do
@@ -129,6 +142,7 @@ function exports()
 			processGoButtonClicked()
 		end
 
+		glitchUpdateTimer = glitchUpdateTimer + 1/60
 	end
 
 	return instance
