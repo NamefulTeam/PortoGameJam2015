@@ -38,7 +38,10 @@ function draw_line(grid_num, x1, y1, x2, y2)
 	love.graphics.line(x1, y1, x2, y2)
 end
 
-function processGoButtonClicked()
+function processGoButtonClicked(grid_state)
+
+	grid_state:update_objects()
+
 	gliderPlaced = false;
 end
 
@@ -62,6 +65,8 @@ function exports()
     instance.goButtonImage = love.graphics.newImage( "placeholders/goButton.png" )
     local goButtonX = (xcount - 2) * grid_unit_size + xoffset
     local goButtonY = (ycount + 1.4) * grid_unit_size
+    local goButtonWidth = 64
+    local goButtonHeight = 32
 
 	function instance:draw()
 		love.graphics.setColor(background_color[1], background_color[2], background_color[3])
@@ -125,8 +130,6 @@ function exports()
 			end
     	end
 
-		self.grid_state:update_objects()
-
     	-- Button Go to Evolution mode
 		love.graphics.draw(self.goButtonImage, goButtonX, goButtonY)
 	end
@@ -138,8 +141,9 @@ function exports()
 		lastFrameMouseClicked = mouseClicked
 		mouseClicked = love.mouse.isDown("l")
 
-		if mouseClicked and mouse_x > goButtonX and mouse_x <= goButtonX + 64 and mouse_y > goButtonY and mouse_y <= goButtonY + 32 then
-			processGoButtonClicked()
+		if mouseClicked and mouse_x > goButtonX and mouse_x <= goButtonX + goButtonWidth and mouse_y > goButtonY and mouse_y <= goButtonY + goButtonHeight and 
+			not lastFrameMouseClicked then
+			processGoButtonClicked(self.grid_state)
 		end
 
 		glitchUpdateTimer = glitchUpdateTimer + 1/60
