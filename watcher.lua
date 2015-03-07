@@ -26,6 +26,17 @@ local function exports(x, y, direction)
 			self.direction = directions.UP
 		end
 
+		--find close gliders
+		if grid:get_object_at(self.x+1, self.y) and grid:get_object_at(self.x+1, self.y).type == 'glider' then
+			self.direction = directions.RIGHT
+		elseif grid:get_object_at(self.x-1, self.y) and grid:get_object_at(self.x-1, self.y).type == 'glider'then
+			self.direction = directions.LEFT
+		elseif grid:get_object_at(self.x, self.y+1) and grid:get_object_at(self.x, self.y+1).type == 'glider' then
+			self.direction = directions.DOWN
+		elseif grid:get_object_at(self.x, self.y-1) and grid:get_object_at(self.x, self.y-1).type == 'glider' then
+			self.direction = directions.UP
+		end
+
 		local next_x = self.x + directions.get_x_diff(self.direction)
 		local next_y = self.y + directions.get_y_diff(self.direction)
 
@@ -35,7 +46,7 @@ local function exports(x, y, direction)
 			end
 			local object = grid:get_object_at(next_x, next_y)
 			if object and object.type == 'glider' then
-				grid:delete_object_at(next_x, next_y)
+				grid:delete_object(object)
 				self.x = next_x
 				self.y = next_y
 			elseif object and object.type == 'watcher' then
