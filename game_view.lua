@@ -83,8 +83,8 @@ function exports(round_num)
 	end
 
     instance.goButtonImage = love.graphics.newImage( "placeholders/goButton.png" )
-    local goButtonX = (xcount - 2) * grid_unit_size + xoffset
-    local goButtonY = (ycount + 1.4) * grid_unit_size
+    local goButtonX = love.window.getWidth()-225
+    local goButtonY = love.window.getHeight()-yoffset-50
     local goButtonWidth = 64
     local goButtonHeight = 32
 
