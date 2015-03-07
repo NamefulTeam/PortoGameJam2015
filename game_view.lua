@@ -206,17 +206,17 @@ function exports(round_num)
 					processGoButtonClicked(self.grid_state, self.player_state)
 				end
 			end
-
-			if self.player_state.gameOver then
-				active_screen.set(game_over_view())
-				return
-			end
 		else
 			if tick_time >= 3 then
 				tick_time = 0
 				if evolution_phase > evolution_phases then
 					self.grid_state.mode = MODE_SIGNAL
 					current_object = nil
+
+					if self.player_state.gameOver then
+						active_screen.set(game_over_view())
+						return
+					end
 				else
 					if current_object == nil then
 						current_object = self.grid_state.first_object
