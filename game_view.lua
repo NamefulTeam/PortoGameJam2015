@@ -5,6 +5,9 @@ directions = require 'directions'
 glider = require 'glider'
 watcher = require 'watcher'
 player_state = require 'player_state'
+stack_trace = require 'stackTrace'
+active_screen = require 'active_screen'
+game_over_view = require 'game_over_view'
 
 grid_normal_color = {180, 230, 255}
 grid_block_color = {100, 200, 250}
@@ -46,7 +49,7 @@ function processGoButtonClicked(grid_state, player_state)
 
 	grid_state:update_objects()
 
-	player_state.numberOfRounds = player_state.numberOfRounds - 1
+	player_state:endRound()
 
 	gliderPlaced = false;
 end
@@ -87,16 +90,12 @@ function exports(round_num)
     local roundWidth = 24
 
 	function instance:draw()
-
+		love.graphics.setColor(255,255,255)
 		love.graphics.draw(background, 0, 0)
 
 		-- Draw Grid
 		local current_x = xoffset
 		local grid_num = 0
-
-		-- glider
-		local drawGliderX = -1
-		local drawGliderY = -1
 
 		while grid_num <= xcount do
 			draw_line(grid_num, current_x, yoffset, current_x, yoffset + ycount * grid_unit_size)
@@ -121,6 +120,8 @@ function exports(round_num)
 			current_y = current_y + grid_unit_size
 			grid_num = grid_num + 1
 		end
+
+		stack_trace.draw_stack(self.grid_state, love.window.getWidth()-250, 100,love.mouse.getX(),love.mouse.getY(),xoffset,yoffset)
 
 		if glitchUpdateTimer > 0.2 then
 			glitchUpdate = true
@@ -153,6 +154,11 @@ function exports(round_num)
 	end
 
 	function instance:update()
+
+		if self.player_state.gameOver then
+			active_screen.set(game_over_view())
+			return
+		end
 
 		mouse_x, mouse_y = love.mouse.getPosition()
 
