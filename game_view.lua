@@ -5,7 +5,6 @@ directions = require 'directions'
 glider = require 'glider'
 watcher = require 'watcher'
 
-background_color = {240, 240, 240}
 grid_normal_color = {180, 230, 255}
 grid_block_color = {100, 200, 250}
 grid_line_width = 0.5
@@ -83,10 +82,11 @@ function exports()
     local goButtonWidth = 64
     local goButtonHeight = 32
 
+    local background = love.graphics.newImage('background/background_light.png')
+
 	function instance:draw()
 
-		love.graphics.setColor(background_color[1], background_color[2], background_color[3])
-		love.graphics.rectangle('fill', 0, 0, 1280, 720)
+		love.graphics.draw(background, 0, 0)
 
 		-- Draw Grid
 		local current_x = xoffset
@@ -153,7 +153,7 @@ function exports()
 		glitchUpdate = false	
 
     	-- Button Go to Evolution mode
-    	love.graphics.setColor(background_color[1], background_color[2], background_color[3])
+    	love.graphics.setColor(255, 255, 255)
 		love.graphics.draw(self.goButtonImage, goButtonX, goButtonY)
 	end
 
