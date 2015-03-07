@@ -6,6 +6,8 @@ glider = require 'glider'
 watcher = require 'watcher'
 player_state = require 'player_state'
 stack_trace = require 'stackTrace'
+active_screen = require 'active_screen'
+game_over_view = require 'game_over_view'
 
 grid_normal_color = {180, 230, 255}
 grid_block_color = {100, 200, 250}
@@ -175,6 +177,11 @@ function exports(round_num)
 	end
 
 	function instance:update()
+
+		if self.player_state.gameOver then
+			active_screen.set(game_over_view())
+			return
+		end
 
 		mouse_x, mouse_y = love.mouse.getPosition()
 
