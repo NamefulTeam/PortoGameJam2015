@@ -25,6 +25,8 @@ local function exports(width, height)
 	function grid:add_object(object)
 		assert(object.next == nil)
 		assert(object.prev == nil)
+		assert(object.placed == nil)
+
 		if grid.first_object == nil then
 			assert(grid.last_object == nil)
 
@@ -38,10 +40,13 @@ local function exports(width, height)
 
 			grid.last_object = object
 		end
+
+		object.placed = true
 	end
 
 	function grid:delete_object(object)
 		assert(object ~= nil)
+		assert(object.placed ~= nil)
 
 		if grid.first_object == object then
 			grid.first_object = object.next
@@ -54,6 +59,8 @@ local function exports(width, height)
 		else
 			object.next.prev = object.prev
 		end
+
+		object.placed = nil
 	end
 
 	function grid:replace_object(old_object, new_object)
@@ -61,6 +68,8 @@ local function exports(width, height)
 		assert(new_object ~= nil)
 		assert(new_object.prev == nil)
 		assert(new_object.next == nil)
+		assert(old_object.placed ~= nil)
+		assert(new_object.placed == nil)
 
 		if grid.first_object == old_object then
 			grid.first_object = new_object
@@ -71,10 +80,15 @@ local function exports(width, height)
 
 		if old_object.prev ~= nil then
 			old_object.prev.next = new_object
+			new_object.prev = old_object.prev
 		end
 		if old_object.next ~= nil then
 			old_object.next.prev = new_object
+			new_object.next = old_object.next
 		end
+
+		old_object.placed = nil
+		new_object.placed = true
 	end
 
 	function grid:get_object_at(x, y)
@@ -92,6 +106,7 @@ local function exports(width, height)
 	function grid:draw_objects(offset_x, offset_y)
 		local current_object = self.first_object
 		while current_object ~= nil do
+			assert(current_object.placed)
 			current_object:draw(offset_x, offset_y)
 			current_object = current_object.next
 		end

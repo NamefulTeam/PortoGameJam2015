@@ -1,6 +1,5 @@
 exports = {}
 function exports.draw_stack(grid, x, y, mouse_x, mouse_y, offset_x, offset_y, current)
-	print(current)
 	love.graphics.setColor(255,0,0)
 	--love.graphics.rectangle("fill",x,y, 250,20)
 	--love.graphics.setColor(0,0,0)
@@ -28,7 +27,7 @@ function exports.draw_stack(grid, x, y, mouse_x, mouse_y, offset_x, offset_y, cu
 		else
 			love.graphics.setColor(64,64,255)
 		end
-		
+
 		if (current == nil and current_object == grid.last_object) or (current ~= nil and current.prev == current_object) then
 			love.graphics.print("> at "..current_object.type..".lua: line "..current_object.x.." column "..current_object.y, x+5, y+index*25+5)
 		else
