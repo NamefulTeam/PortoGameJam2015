@@ -6,6 +6,8 @@ glider = require 'glider'
 watcher = require 'watcher'
 player_state = require 'player_state'
 stack_trace = require 'stackTrace'
+active_screen = require 'active_screen'
+game_over_view = require 'game_over_view'
 
 grid_normal_color = {180, 230, 255}
 grid_block_color = {100, 200, 250}
@@ -22,9 +24,6 @@ lastFrameMouseClicked = false;
 -- glider variables
 rectanglesToDraw = {}
 numberOfGliders = 0
-gliderPlaced = false
-lastGliderX = 0
-lastGliderY = 0
 
 -- grid state
 
@@ -42,12 +41,8 @@ function draw_line(grid_num, x1, y1, x2, y2)
 	love.graphics.line(x1, y1, x2, y2)
 end
 
-function gliderClicked(grid_state)
-	local gliderObject = nil
-	if gliderPlaced then
-		gliderObject = grid_state:get_object_at(lastGliderX, lastGliderY)
-		gliderObject.direction = directions.rotate_clockwise(gliderObject.direction)
-	end
+function gliderClicked()
+	lastGlider.direction = directions.rotate_clockwise(lastGlider.direction)
 end
 
 function processGoButtonClicked(grid_state, player_state)
@@ -102,10 +97,6 @@ function exports(round_num)
 		local current_x = xoffset
 		local grid_num = 0
 
-		-- glider
-		local drawGliderX = -1
-		local drawGliderY = -1
-
 		while grid_num <= xcount do
 			draw_line(grid_num, current_x, yoffset, current_x, yoffset + ycount * grid_unit_size)
 
@@ -131,18 +122,6 @@ function exports(round_num)
 		end
 
 		stack_trace.draw_stack(self.grid_state, love.window.getWidth()-250, 100,love.mouse.getX(),love.mouse.getY(),xoffset,yoffset)
-
-		if mouseClicked and drawGliderX >= 0 and drawGliderY >= 0 and drawGliderX < xcount and drawGliderY < ycount and 
-			not self.grid_state:get_space_at(drawGliderX+1, drawGliderY+1) and self.grid_state:get_object_at(drawGliderX+1, drawGliderY+1) == nil then
-
-			if gliderPlaced then
-				self.grid_state:delete_object(self.grid_state:get_object_at(lastGliderX, lastGliderY))
-			end
-			lastGliderX = drawGliderX + 1
-			lastGliderY = drawGliderY + 1
-			self.grid_state:add_object(glider(lastGliderX, lastGliderY, directions.DOWN))
-			gliderPlaced = true
-		end
 
 		if glitchUpdateTimer > 0.2 then
 			glitchUpdate = true
@@ -176,22 +155,38 @@ function exports(round_num)
 
 	function instance:update()
 
+		if self.player_state.gameOver then
+			active_screen.set(game_over_view())
+			return
+		end
+
 		mouse_x, mouse_y = love.mouse.getPosition()
 
 		lastFrameMouseClicked = mouseClicked
 		mouseClicked = love.mouse.isDown("l")
 
-		if mouseClicked and not lastFrameMouseClicked then
+		if mouseClicked then
 
-			if mouse_x > goButtonX and mouse_x <= goButtonX + goButtonWidth and mouse_y > goButtonY and mouse_y <= goButtonY + goButtonHeight then
-				processGoButtonClicked(self.grid_state, self.player_state)
-			else if gliderPlaced then
-					local posX = (lastGliderX-1) * grid_unit_size + xoffset
-					local posY = (lastGliderY-1) * grid_unit_size + yoffset
-					if mouse_x > posX and mouse_x <= posX + grid_unit_size and mouse_y > posY and mouse_y <= posY + grid_unit_size then
-						gliderClicked(self.grid_state)
+			target_x = math.floor((mouse_x - xoffset) / grid_unit_size) + 1
+			target_y = math.floor((mouse_y - yoffset) / grid_unit_size) + 1
+
+			if self.grid_state:in_grid(target_x, target_y) and 
+				not self.grid_state:get_space_at(target_x, target_y) then
+
+				if gliderPlaced then
+					if lastGlider.x == target_x and lastGlider.y == target_y and not lastFrameMouseClicked then
+						gliderClicked()
+					elseif self.grid_state:get_object_at(target_x, target_y) == nil then
+						lastGlider.x = target_x
+						lastGlider.y = target_y
 					end
+				elseif self.grid_state:get_object_at(target_x, target_y) == nil then
+					lastGlider = glider(target_x, target_y, directions.DOWN)
+					self.grid_state:add_object(lastGlider)
+					gliderPlaced = true
 				end
+			elseif mouse_x > goButtonX and mouse_x <= goButtonX + goButtonWidth and mouse_y > goButtonY and mouse_y <= goButtonY + goButtonHeight and not lastFrameMouseClicked then
+				processGoButtonClicked(self.grid_state, self.player_state)
 			end
 		end
 

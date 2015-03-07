@@ -6,10 +6,10 @@ function exports(round_num)
 
 	function player:endRound()
 
-		player.numberOfRounds = numberOfRounds - 1
+		player.numberOfRounds = player.numberOfRounds - 1
 
 		if player.numberOfRounds == 0 then
-			gameOver = true
+			player.gameOver = true
 		end
 	end
 
