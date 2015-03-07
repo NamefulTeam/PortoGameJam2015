@@ -61,6 +61,7 @@ function exports()
 	local ycount = (720 - yoffsets) / grid_unit_size
 
 	instance.grid_state = grid_state(xcount, ycount)
+	instance.grid_state:add_object(glider(5, 5, directions.UP))
 
 	for watcherI=1,10 do
 		instance.grid_state:add_object(watcher(math.random(0,xcount), math.random(0,ycount), directions.DOWN))
