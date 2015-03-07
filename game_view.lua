@@ -62,12 +62,13 @@ function exports(round_num)
 	local instance = {}
 
 	local block_size = grid_unit_size * grid_big_border
-	local xoffsets = 1280 % block_size
+	available_width = 1280 - 250
+	local xoffsets = available_width % block_size
 	if xoffsets == 0 then
 		xoffsets = block_size
 	end
 	local xoffset = xoffsets / 2
-	local xcount = (1280 - xoffsets) / grid_unit_size
+	local xcount = (available_width - xoffsets) / grid_unit_size
 	local yoffsets = 720 % block_size
 	local yoffset = yoffsets / 2
 	local ycount = (720 - yoffsets) / grid_unit_size
