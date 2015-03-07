@@ -55,9 +55,10 @@ function exports(round_num)
 	end
 	local xoffset = xoffsets / 2
 	local xcount = (available_width - xoffsets) / grid_unit_size
-	local yoffsets = 720 % block_size
-	local yoffset = yoffsets / 2
-	local ycount = (720 - yoffsets) / grid_unit_size
+	local available_height = 720 - 20
+	local yoffsets = available_height % block_size
+	local yoffset = yoffsets / 2 + 20
+	local ycount = (available_height - yoffsets) / grid_unit_size
 
 	instance.grid_state = grid_state(xcount, ycount)
 	instance.grid_state.mode = MODE_SIGNAL
@@ -77,7 +78,7 @@ function exports(round_num)
 
 	instance.player_state = player_state(round_num)
 
-	for watcherI=1,10 do
+	for watcherI=1,5 do
 		instance.grid_state:add_object(watcher(math.random(1,xcount), math.random(1,ycount), directions.DOWN))
 	end
 
@@ -93,9 +94,18 @@ function exports(round_num)
     local roundY = 0.4 * grid_unit_size
     local roundWidth = 24
 
+    local signalImage = love.graphics.newImage('header/signal.png')
+    local processingImage = love.graphics.newImage('header/processing.png')
+
 	function instance:draw()
 		love.graphics.setColor(255,255,255)
 		love.graphics.draw(background, 0, 0)
+
+		if instance.grid_state.mode == MODE_SIGNAL then
+			love.graphics.draw(signalImage, xoffset, 17)
+		else
+			love.graphics.draw(processingImage, xoffset, 17)
+		end
 
 		-- Draw Grid
 		local current_x = xoffset
