@@ -26,6 +26,11 @@ rectanglesToDraw = {}
 numberOfGliders = 0
 
 -- grid state
+MODE_SIGNAL = 'signal'
+MODE_EVOLUTION = 'evolution'
+mode = MODE_SIGNAL
+
+evolution_phases = 5
 
 -- visual glitch state
 glitchUpdateTimer = 0.5
@@ -46,12 +51,12 @@ function gliderClicked()
 end
 
 function processGoButtonClicked(grid_state, player_state)
-
-	grid_state:update_objects()
-
 	player_state:endRound()
 
-	gliderPlaced = false;
+	gliderPlaced = false
+	mode = MODE_EVOLUTION
+	tick_time = 0
+	evolution_phase = 1
 end
 
 function exports(round_num)
@@ -78,8 +83,8 @@ function exports(round_num)
 	end
 
     instance.goButtonImage = love.graphics.newImage( "placeholders/goButton.png" )
-    local goButtonX = (xcount - 2) * grid_unit_size + xoffset
-    local goButtonY = (ycount + 1.4) * grid_unit_size
+    local goButtonX = love.window.getWidth()-225
+    local goButtonY = love.window.getHeight()-yoffset-50
     local goButtonWidth = 64
     local goButtonHeight = 32
 
@@ -143,9 +148,11 @@ function exports(round_num)
 
 		glitchUpdate = false	
 
-    	-- Button Go to Evolution mode
-    	love.graphics.setColor(255, 255, 255)
-		love.graphics.draw(self.goButtonImage, goButtonX, goButtonY)
+		if mode == MODE_SIGNAL then
+	    	-- Button Go to Evolution mode
+	    	love.graphics.setColor(255, 255, 255)
+			love.graphics.draw(self.goButtonImage, goButtonX, goButtonY)
+		end
 
 		-- rounds
 		for i = 1, self.player_state.numberOfRounds, 1 do
@@ -154,39 +161,52 @@ function exports(round_num)
 	end
 
 	function instance:update()
-
 		if self.player_state.gameOver then
 			active_screen.set(game_over_view())
 			return
 		end
 
-		mouse_x, mouse_y = love.mouse.getPosition()
+		if mode == MODE_SIGNAL then
+			mouse_x, mouse_y = love.mouse.getPosition()
 
-		lastFrameMouseClicked = mouseClicked
-		mouseClicked = love.mouse.isDown("l")
+			lastFrameMouseClicked = mouseClicked
+			mouseClicked = love.mouse.isDown("l")
 
-		if mouseClicked then
+			if mouseClicked then
 
-			target_x = math.floor((mouse_x - xoffset) / grid_unit_size) + 1
-			target_y = math.floor((mouse_y - yoffset) / grid_unit_size) + 1
+				target_x = math.floor((mouse_x - xoffset) / grid_unit_size) + 1
+				target_y = math.floor((mouse_y - yoffset) / grid_unit_size) + 1
 
-			if self.grid_state:in_grid(target_x, target_y) and 
-				not self.grid_state:get_space_at(target_x, target_y) then
+				if self.grid_state:in_grid(target_x, target_y) and 
+					not self.grid_state:get_space_at(target_x, target_y) then
 
-				if gliderPlaced then
-					if lastGlider.x == target_x and lastGlider.y == target_y and not lastFrameMouseClicked then
-						gliderClicked()
+					if gliderPlaced then
+						if lastGlider.x == target_x and lastGlider.y == target_y and not lastFrameMouseClicked then
+							gliderClicked()
+						elseif self.grid_state:get_object_at(target_x, target_y) == nil then
+							lastGlider.x = target_x
+							lastGlider.y = target_y
+						end
 					elseif self.grid_state:get_object_at(target_x, target_y) == nil then
-						lastGlider.x = target_x
-						lastGlider.y = target_y
+						lastGlider = glider(target_x, target_y, directions.DOWN)
+						self.grid_state:add_object(lastGlider)
+						gliderPlaced = true
 					end
-				elseif self.grid_state:get_object_at(target_x, target_y) == nil then
-					lastGlider = glider(target_x, target_y, directions.DOWN)
-					self.grid_state:add_object(lastGlider)
-					gliderPlaced = true
+				elseif mouse_x > goButtonX and mouse_x <= goButtonX + goButtonWidth and mouse_y > goButtonY and mouse_y <= goButtonY + goButtonHeight and not lastFrameMouseClicked then
+					processGoButtonClicked(self.grid_state, self.player_state)
 				end
-			elseif mouse_x > goButtonX and mouse_x <= goButtonX + goButtonWidth and mouse_y > goButtonY and mouse_y <= goButtonY + goButtonHeight and not lastFrameMouseClicked then
-				processGoButtonClicked(self.grid_state, self.player_state)
+			end
+		else
+			if tick_time >= 10 then
+				tick_time = 0
+				if evolution_phase > evolution_phases then
+					mode = MODE_SIGNAL
+				else
+					evolution_phase = evolution_phase + 1
+					self.grid_state:update_objects(self)
+				end
+			else
+				tick_time = tick_time + 1
 			end
 		end
 
