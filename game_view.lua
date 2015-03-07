@@ -69,6 +69,7 @@ function exports()
     local goButtonHeight = 32
 
 	function instance:draw()
+
 		love.graphics.setColor(background_color[1], background_color[2], background_color[3])
 		love.graphics.rectangle('fill', 0, 0, 1280, 720)
 
@@ -131,6 +132,7 @@ function exports()
     	end
 
     	-- Button Go to Evolution mode
+    	love.graphics.setColor(background_color[1], background_color[2], background_color[3])
 		love.graphics.draw(self.goButtonImage, goButtonX, goButtonY)
 	end
 
