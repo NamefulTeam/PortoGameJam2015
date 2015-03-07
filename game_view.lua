@@ -18,17 +18,13 @@ grid_big_border = 5
 -- mouse variables
 mouse_x = 0;
 mouse_y = 0;
-mouseClicked = false;
-lastFrameMouseClicked = false;
 
 -- glider variables
 rectanglesToDraw = {}
-numberOfGliders = 0
 
 -- grid state
 MODE_SIGNAL = 'signal'
 MODE_EVOLUTION = 'evolution'
-mode = MODE_SIGNAL
 
 evolution_phases = 5
 
@@ -46,21 +42,26 @@ function draw_line(grid_num, x1, y1, x2, y2)
 	love.graphics.line(x1, y1, x2, y2)
 end
 
-function gliderClicked()
-	lastGlider.direction = directions.rotate_clockwise(lastGlider.direction)
-end
-
-function processGoButtonClicked(grid_state, player_state)
-	player_state:endRound()
-
-	gliderPlaced = false
-	mode = MODE_EVOLUTION
-	tick_time = 0
-	evolution_phase = 1
-end
-
 function exports(round_num)
 	local instance = {}
+
+	local mouseClicked = false;
+	local lastFrameMouseClicked = true;
+
+	local mode = MODE_SIGNAL
+
+	local function gliderClicked()
+		lastGlider.direction = directions.rotate_clockwise(lastGlider.direction)
+	end
+
+	local function processGoButtonClicked(grid_state, player_state)
+		player_state:endRound()
+
+		gliderPlaced = false
+		mode = MODE_EVOLUTION
+		tick_time = 0
+		evolution_phase = 1
+	end
 
 	local block_size = grid_unit_size * grid_big_border
 	available_width = 1280 - 250
