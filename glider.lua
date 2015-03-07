@@ -16,6 +16,8 @@ local function exports(x, y, direction)
 		local next_x = self.x + directions.get_x_diff(self.direction)
 		local next_y = self.y + directions.get_y_diff(self.direction)
 
+		grid:set_space_at(self.x, self.y, true)
+
 		self.x = next_x
 		self.y = next_y
 	end
