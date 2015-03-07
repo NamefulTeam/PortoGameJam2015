@@ -95,7 +95,7 @@ function exports(round_num)
     local roundWidth = 24
 
     local signalImage = love.graphics.newImage('header/signal.png')
-    local evolveImage = love.graphics.newImage('header/evolve.png')
+    local processingImage = love.graphics.newImage('header/processing.png')
 
 	function instance:draw()
 		love.graphics.setColor(255,255,255)
@@ -104,7 +104,7 @@ function exports(round_num)
 		if instance.grid_state.mode == MODE_SIGNAL then
 			love.graphics.draw(signalImage, xoffset, 17)
 		else
-			love.graphics.draw(evolveImage, xoffset, 17)
+			love.graphics.draw(processingImage, xoffset, 17)
 		end
 
 		-- Draw Grid
