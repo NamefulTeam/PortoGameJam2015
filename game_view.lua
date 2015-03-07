@@ -197,13 +197,22 @@ function exports(round_num)
 				end
 			end
 		else
-			if tick_time >= 10 then
+			if tick_time >= 3 then
 				tick_time = 0
 				if evolution_phase > evolution_phases then
 					mode = MODE_SIGNAL
+					current_object = nil
 				else
-					evolution_phase = evolution_phase + 1
-					self.grid_state:update_objects(self)
+					if current_object == nil then
+						current_object = self.grid_state.first_object
+					end
+					if current_object ~= nil then
+						current_object:update(self.grid_state)
+						current_object = current_object.next
+						if current_object == nil then
+							evolution_phase = evolution_phase + 1
+						end
+					end
 				end
 			else
 				tick_time = tick_time + 1
