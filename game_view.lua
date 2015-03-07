@@ -1,6 +1,6 @@
 -- imports
 grid_state = require 'grid_state'
-
+glitch_gen = require 'glitchGen'
 
 background_color = {240, 240, 240}
 grid_normal_color = {180, 230, 255}
@@ -20,6 +20,8 @@ numberOfGliders = 0
 
 -- grid state
 
+-- visual glitch state
+glitchUpdateTimer = 0.5
 
 function draw_line(grid_num, x1, y1, x2, y2)
 	local is_main = grid_num % grid_big_border == 0
@@ -93,12 +95,14 @@ function exports()
 			rectanglesToDraw[numberOfGliders] = pos
 		end
 
+		if glitchUpdateTimer > 0.2 then
+			glitchUpdate = true
+			glitchUpdateTimer = glitchUpdateTimer - 0.2
+		end
 		for i,rect in ipairs(rectanglesToDraw) do
-      		love.graphics.setColor(255,0,0)
-			love.graphics.rectangle('fill', rect["x"], rect["y"], grid_unit_size, grid_unit_size)
+			glitch_gen.drawGlich(rect["x"], rect["y"], xcount, glitchUpdate)
     	end
-
-		
+		glitchUpdate = false	
 	end
 
 	function instance:update()
@@ -107,6 +111,7 @@ function exports()
 
 		mouseClicked = love.mouse.isDown("l") 
 
+		glitchUpdateTimer = glitchUpdateTimer + 1/60
 	end
 
 	return instance
