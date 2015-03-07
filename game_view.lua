@@ -20,7 +20,6 @@ numberOfGliders = 0
 
 -- grid state
 
-
 function draw_line(grid_num, x1, y1, x2, y2)
 	local is_main = grid_num % grid_big_border == 0
 
@@ -84,18 +83,16 @@ function exports()
 		end
 
 		if mouseClicked and drawGliderX >= 0 and drawGliderY >= 0 and drawGliderX < xcount and drawGliderY < ycount then
-			local pos = {}
-			local posX = "x"
-			local posY = "y"
-			pos[posX] = drawGliderX * grid_unit_size + xoffset
-			pos[posY] = drawGliderY * grid_unit_size + yoffset
-			numberOfGliders = numberOfGliders + 1
-			rectanglesToDraw[numberOfGliders] = pos
+			self.grid_state:set_space_at(drawGliderX+1, drawGliderY+1, true)
 		end
 
-		for i,rect in ipairs(rectanglesToDraw) do
-      		love.graphics.setColor(255,0,0)
-			love.graphics.rectangle('fill', rect["x"], rect["y"], grid_unit_size, grid_unit_size)
+		for x = 1, xcount, 1 do
+			for y = 1, ycount, 1 do
+				if self.grid_state:get_space_at(x,y) then
+      				love.graphics.setColor(255,0,0)
+					love.graphics.rectangle('fill', (x-1) * grid_unit_size + xoffset, (y-1) * grid_unit_size + yoffset, grid_unit_size, grid_unit_size)
+				end
+			end
     	end
 
 		
