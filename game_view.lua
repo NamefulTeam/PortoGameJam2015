@@ -18,17 +18,13 @@ grid_big_border = 5
 -- mouse variables
 mouse_x = 0;
 mouse_y = 0;
-mouseClicked = false;
-lastFrameMouseClicked = false;
 
 -- glider variables
 rectanglesToDraw = {}
-numberOfGliders = 0
 
 -- grid state
 MODE_SIGNAL = 'signal'
 MODE_EVOLUTION = 'evolution'
-mode = MODE_SIGNAL
 
 evolution_phases = 5
 
@@ -46,22 +42,11 @@ function draw_line(grid_num, x1, y1, x2, y2)
 	love.graphics.line(x1, y1, x2, y2)
 end
 
-function gliderClicked()
-	lastGlider.direction = directions.rotate_clockwise(lastGlider.direction)
-end
-
-function processGoButtonClicked(grid_state, player_state)
-	player_state:endRound()
-
-	gliderPlaced = false
-	mode = MODE_EVOLUTION
-	tick_time = 0
-	evolution_phase = 1
-end
-
 function exports(round_num)
 	local instance = {}
 
+	local mouseClicked = false;
+	local lastFrameMouseClicked = true;
 	local block_size = grid_unit_size * grid_big_border
 	available_width = 1280 - 250
 	local xoffsets = available_width % block_size
@@ -75,11 +60,25 @@ function exports(round_num)
 	local ycount = (720 - yoffsets) / grid_unit_size
 
 	instance.grid_state = grid_state(xcount, ycount)
+	instance.grid_state.mode = MODE_SIGNAL
+
+	local function gliderClicked()
+		lastGlider.direction = directions.rotate_clockwise(lastGlider.direction)
+	end
+
+	local function processGoButtonClicked(grid_state, player_state)
+		player_state:endRound()
+
+		gliderPlaced = false
+		instance.grid_state.mode = MODE_EVOLUTION
+		tick_time = 0
+		evolution_phase = 1
+	end
 
 	instance.player_state = player_state(round_num)
 
 	for watcherI=1,10 do
-		instance.grid_state:add_object(watcher(math.random(0,xcount), math.random(0,ycount), directions.DOWN))
+		instance.grid_state:add_object(watcher(math.random(1,xcount), math.random(1,ycount), directions.DOWN))
 	end
 
     instance.goButtonImage = love.graphics.newImage( "placeholders/goButton.png" )
@@ -126,7 +125,7 @@ function exports(round_num)
 			grid_num = grid_num + 1
 		end
 
-		stack_trace.draw_stack(self.grid_state, love.window.getWidth()-250, 100,love.mouse.getX(),love.mouse.getY(),xoffset,yoffset)
+		stack_trace.draw_stack(self.grid_state, love.window.getWidth()-250, 100,love.mouse.getX(),love.mouse.getY(),xoffset,yoffset,current_object)
 
 		if glitchUpdateTimer > 0.2 then
 			glitchUpdate = true
@@ -148,7 +147,7 @@ function exports(round_num)
 
 		glitchUpdate = false	
 
-		if mode == MODE_SIGNAL then
+		if self.grid_state.mode == MODE_SIGNAL then
 	    	-- Button Go to Evolution mode
 	    	love.graphics.setColor(255, 255, 255)
 			love.graphics.draw(self.goButtonImage, goButtonX, goButtonY)
@@ -166,7 +165,7 @@ function exports(round_num)
 			return
 		end
 
-		if mode == MODE_SIGNAL then
+		if self.grid_state.mode == MODE_SIGNAL then
 			mouse_x, mouse_y = love.mouse.getPosition()
 
 			lastFrameMouseClicked = mouseClicked
@@ -200,7 +199,7 @@ function exports(round_num)
 			if tick_time >= 3 then
 				tick_time = 0
 				if evolution_phase > evolution_phases then
-					mode = MODE_SIGNAL
+					self.grid_state.mode = MODE_SIGNAL
 					current_object = nil
 				else
 					if current_object == nil then
