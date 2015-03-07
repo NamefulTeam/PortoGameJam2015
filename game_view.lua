@@ -84,8 +84,8 @@ function exports(round_num)
     instance.goButtonImage = love.graphics.newImage( "placeholders/goButton.png" )
     local goButtonX = love.window.getWidth()-225
     local goButtonY = love.window.getHeight()-yoffset-50
-    local goButtonWidth = 64
-    local goButtonHeight = 32
+    local goButtonWidth = 150
+    local goButtonHeight = 50
 
     local background = love.graphics.newImage('background/background_light.png')
     instance.roundImage = love.graphics.newImage("placeholders/round.png")
