@@ -124,16 +124,14 @@ function exports()
 		for x = 1, xcount, 1 do
 			for y = 1, ycount, 1 do
 				if self.grid_state:get_space_at(x, y) then
-      				--love.graphics.setColor(255,0,0)
-					--love.graphics.rectangle('fill', (x-1) * grid_unit_size + xoffset, (y-1) * grid_unit_size + yoffset, grid_unit_size, grid_unit_size)
 					glitch_gen.drawGlich( (x-1) * grid_unit_size + xoffset, (y-1) * grid_unit_size + yoffset, xcount, glitchUpdate)
 				end
 			end
     	end
 		glitchUpdate = false	
-		self.grid_state:update_objects()
 
     	-- Button Go to Evolution mode
+		love.graphics.draw(self.goButtonImage, (xcount - 2) * grid_unit_size + xoffset, (ycount+1.4) * grid_unit_size)
 		love.graphics.draw(self.goButtonImage, goButtonX, goButtonY)
 	end
 
