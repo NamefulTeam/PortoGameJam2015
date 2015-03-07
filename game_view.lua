@@ -54,7 +54,7 @@ function processGoButtonClicked(grid_state, player_state)
 
 	grid_state:update_objects()
 
-	player_state.numberOfRounds = player_state.numberOfRounds - 1
+	player_state:endRound()
 
 	gliderPlaced = false;
 end
