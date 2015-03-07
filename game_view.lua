@@ -4,6 +4,7 @@ glitch_gen = require 'glitchGen'
 directions = require 'directions'
 glider = require 'glider'
 watcher = require 'watcher'
+player_state = require 'player_state'
 
 grid_normal_color = {180, 230, 255}
 grid_block_color = {100, 200, 250}
@@ -48,14 +49,16 @@ function gliderClicked(grid_state)
 	end
 end
 
-function processGoButtonClicked(grid_state)
+function processGoButtonClicked(grid_state, player_state)
 
 	grid_state:update_objects()
+
+	player_state.numberOfRounds = player_state.numberOfRounds - 1
 
 	gliderPlaced = false;
 end
 
-function exports()
+function exports(round_num)
 	local instance = {}
 
 	local block_size = grid_unit_size * grid_big_border
@@ -72,6 +75,8 @@ function exports()
 	instance.grid_state = grid_state(xcount, ycount)
 	instance.grid_state:add_object(glider(5, 5, directions.UP))
 
+	instance.player_state = player_state(round_num)
+
 	for watcherI=1,10 do
 		instance.grid_state:add_object(watcher(math.random(0,xcount), math.random(0,ycount), directions.DOWN))
 	end
@@ -83,6 +88,10 @@ function exports()
     local goButtonHeight = 32
 
     local background = love.graphics.newImage('background/background_light.png')
+    instance.roundImage = love.graphics.newImage("placeholders/round.png")
+    local roundX = (xcount-0.7) * grid_unit_size + xoffset
+    local roundY = 0.4 * grid_unit_size
+    local roundWidth = 24
 
 	function instance:draw()
 
@@ -155,6 +164,11 @@ function exports()
     	-- Button Go to Evolution mode
     	love.graphics.setColor(255, 255, 255)
 		love.graphics.draw(self.goButtonImage, goButtonX, goButtonY)
+
+		-- rounds
+		for i = 1, self.player_state.numberOfRounds, 1 do
+			love.graphics.draw(self.roundImage, roundX - (roundWidth+2)*(i-1),roundY)
+		end
 	end
 
 	function instance:update()
@@ -167,7 +181,7 @@ function exports()
 		if mouseClicked and not lastFrameMouseClicked then
 
 			if mouse_x > goButtonX and mouse_x <= goButtonX + goButtonWidth and mouse_y > goButtonY and mouse_y <= goButtonY + goButtonHeight then
-				processGoButtonClicked(self.grid_state)
+				processGoButtonClicked(self.grid_state, self.player_state)
 			else if gliderPlaced then
 					local posX = (lastGliderX-1) * grid_unit_size + xoffset
 					local posY = (lastGliderY-1) * grid_unit_size + yoffset
