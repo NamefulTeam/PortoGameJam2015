@@ -1,6 +1,7 @@
 -- imports
 grid_state = require 'grid_state'
-
+directions = require 'directions'
+glider = require 'glider'
 
 background_color = {240, 240, 240}
 grid_normal_color = {180, 230, 255}
@@ -83,19 +84,21 @@ function exports()
 		end
 
 		if mouseClicked and drawGliderX >= 0 and drawGliderY >= 0 and drawGliderX < xcount and drawGliderY < ycount then
-			self.grid_state:set_space_at(drawGliderX+1, drawGliderY+1, true)
+			self.grid_state:add_object(glider(drawGliderX + 1, drawGliderY + 1, directions.DOWN))
 		end
+
+		self.grid_state:draw_objects(xoffset, yoffset)
 
 		for x = 1, xcount, 1 do
 			for y = 1, ycount, 1 do
-				if self.grid_state:get_space_at(x,y) then
+				if self.grid_state:get_space_at(x, y) then
       				love.graphics.setColor(255,0,0)
 					love.graphics.rectangle('fill', (x-1) * grid_unit_size + xoffset, (y-1) * grid_unit_size + yoffset, grid_unit_size, grid_unit_size)
 				end
 			end
     	end
 
-		
+		self.grid_state:update_objects()
 	end
 
 	function instance:update()

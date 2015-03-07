@@ -23,8 +23,8 @@ local function exports(x, y, direction)
 	end
 
 	function instance:draw(offset_x, offset_y)
-		local actual_x = offset_x + self.x * 32
-		local actual_y = offset_y + self.y * 32
+		local actual_x = offset_x + (self.x - 1) * 32
+		local actual_y = offset_y + (self.y - 1) * 32
 
 		love.graphics.draw(self.image, self.quad, actual_x, actual_y)
 	end
