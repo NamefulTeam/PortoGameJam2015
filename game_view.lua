@@ -73,6 +73,7 @@ function exports()
     local goButtonHeight = 32
 
 	function instance:draw()
+
 		love.graphics.setColor(background_color[1], background_color[2], background_color[3])
 		love.graphics.rectangle('fill', 0, 0, 1280, 720)
 
@@ -122,9 +123,6 @@ function exports()
 			glitch_gen.drawGlich(rect["x"], rect["y"], xcount, glitchUpdate)
     	end
 		
-
-		self.grid_state:draw_objects(xoffset, yoffset)
-
 		for x = 1, xcount, 1 do
 			for y = 1, ycount, 1 do
 				if self.grid_state:get_space_at(x, y) then
@@ -132,10 +130,13 @@ function exports()
 				end
 			end
     	end
+
+		self.grid_state:draw_objects(xoffset, yoffset)
+
 		glitchUpdate = false	
 
     	-- Button Go to Evolution mode
-		love.graphics.draw(self.goButtonImage, (xcount - 2) * grid_unit_size + xoffset, (ycount+1.4) * grid_unit_size)
+    	love.graphics.setColor(background_color[1], background_color[2], background_color[3])
 		love.graphics.draw(self.goButtonImage, goButtonX, goButtonY)
 	end
 

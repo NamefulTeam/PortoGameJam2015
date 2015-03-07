@@ -13,13 +13,19 @@ local function exports(x, y, direction)
 	instance.quad = love.graphics.newQuad(0, 0, 32, 32, 32, 32)
 
 	function instance:update(grid)
+		assert(grid:in_grid(self.x, self.y))
+
 		local next_x = self.x + directions.get_x_diff(self.direction)
 		local next_y = self.y + directions.get_y_diff(self.direction)
 
-		grid:set_space_at(self.x, self.y, true)
+		if grid:in_grid(next_x, next_y) and not grid:get_space_at(next_x, next_y) then
+			grid:set_space_at(self.x, self.y, true)
 
-		self.x = next_x
-		self.y = next_y
+			self.x = next_x
+			self.y = next_y
+		else
+			self.direction = directions.invert(self.direction)
+		end
 	end
 
 	function instance:draw(offset_x, offset_y)
