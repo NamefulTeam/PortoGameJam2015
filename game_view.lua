@@ -41,13 +41,15 @@ function draw_line(grid_num, x1, y1, x2, y2)
 	love.graphics.line(x1, y1, x2, y2)
 end
 
-function processGoButtonClicked(grid_state)
-
+function gliderClicked(grid_state)
 	local gliderObject = nil
 	if gliderPlaced then
 		gliderObject = grid_state:get_object_at(lastGliderX, lastGliderY)
-		gliderObject.direction = directions.rotate_clockwise()
+		gliderObject.direction = directions.rotate_clockwise(gliderObject.direction)
 	end
+end
+
+function processGoButtonClicked(grid_state)
 
 	grid_state:update_objects()
 
@@ -157,9 +159,18 @@ function exports()
 		lastFrameMouseClicked = mouseClicked
 		mouseClicked = love.mouse.isDown("l")
 
-		if mouseClicked and mouse_x > goButtonX and mouse_x <= goButtonX + goButtonWidth and mouse_y > goButtonY and mouse_y <= goButtonY + goButtonHeight and 
-			not lastFrameMouseClicked then
-			processGoButtonClicked(self.grid_state)
+		if mouseClicked and not lastFrameMouseClicked then
+
+			if mouse_x > goButtonX and mouse_x <= goButtonX + goButtonWidth and mouse_y > goButtonY and mouse_y <= goButtonY + goButtonHeight then
+				processGoButtonClicked(self.grid_state)
+			else if gliderPlaced then
+					local posX = (lastGliderX-1) * grid_unit_size + xoffset
+					local posY = (lastGliderY-1) * grid_unit_size + yoffset
+					if mouse_x > posX and mouse_x <= posX + grid_unit_size and mouse_y > posY and mouse_y <= posY + grid_unit_size then
+						gliderClicked(self.grid_state)
+					end
+				end
+			end
 		end
 
 		glitchUpdateTimer = glitchUpdateTimer + 1/60
