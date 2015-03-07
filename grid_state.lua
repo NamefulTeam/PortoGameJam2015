@@ -41,6 +41,8 @@ local function exports(width, height)
 	end
 
 	function grid:delete_object(object)
+		assert(object ~= nil)
+
 		if grid.first_object == object then
 			grid.first_object = object.next
 		else
@@ -55,6 +57,8 @@ local function exports(width, height)
 	end
 
 	function grid:replace_object(old_object, new_object)
+		assert(old_object ~= nil)
+		assert(new_object ~= nil)
 		assert(new_object.prev == nil)
 		assert(new_object.next == nil)
 

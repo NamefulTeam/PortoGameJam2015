@@ -1,4 +1,5 @@
 directions = require 'directions'
+glider = require 'glider'
 
 local function exports(x, y, direction)
 	assert(directions.is_direction(direction))
@@ -58,6 +59,10 @@ local function exports(x, y, direction)
 		else
 			self.direction = directions.invert(self.direction)
 		end
+	end
+
+	function instance:suffer_explosion(grid)
+		grid:replace_object(self, glider(self.x, self.y, self.direction))
 	end
 
 	function instance:draw(offset_x, offset_y)
