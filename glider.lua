@@ -28,16 +28,32 @@ local function exports(x, y, direction)
 				self.y = next_y
 			elseif found_object.type == 'glider' then
 				-- Blow up
-				self:explode(grid, found_object)
+				self:explode(grid)
 			end
 		else
 			self.direction = directions.invert(self.direction)
 		end
 	end
 
-	function instance:explode(grid, other_object)
+	function instance:explode(grid)
+		for dy = -1, 1 do
+			for dx = -1, 1 do
+				local x = self.x + dx
+				local y = self.y + dy
+
+				local object = grid:get_object_at(x, y)
+				if object ~= nil then
+					object:suffer_explosion(grid)
+				else
+					grid:set_space_at(x, y, true)
+				end
+			end
+		end
+	end
+
+	function instance:suffer_explosion(grid)
 		grid:delete_object(self)
-		grid:delete_object(other_object)
+		grid:set_space_at(self.x, self.y, true)
 	end
 
 	function instance:draw(offset_x, offset_y)
