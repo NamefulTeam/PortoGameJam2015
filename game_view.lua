@@ -21,6 +21,8 @@ lastFrameMouseClicked = false;
 rectanglesToDraw = {}
 numberOfGliders = 0
 gliderPlaced = false
+lastGliderX = 0
+lastGliderY = 0
 
 -- grid state
 
@@ -39,6 +41,12 @@ function draw_line(grid_num, x1, y1, x2, y2)
 end
 
 function processGoButtonClicked(grid_state)
+
+	local gliderObject = nil
+	if gliderPlaced then
+		gliderObject = grid_state:get_object_at(lastGliderX, lastGliderY)
+		gliderObject.direction = directions.rotate_clockwise()
+	end
 
 	grid_state:update_objects()
 
@@ -107,7 +115,9 @@ function exports()
 
 		if mouseClicked and drawGliderX >= 0 and drawGliderY >= 0 and drawGliderX < xcount and drawGliderY < ycount and 
 			not self.grid_state:get_space_at(drawGliderX+1, drawGliderY+1) and not gliderPlaced then
-			self.grid_state:add_object(glider(drawGliderX + 1, drawGliderY + 1, directions.DOWN))
+			lastGliderX = drawGliderX + 1
+			lastGliderY = drawGliderY + 1
+			self.grid_state:add_object(glider(lastGliderX, lastGliderY, directions.DOWN))
 			gliderPlaced = true
 		end
 
