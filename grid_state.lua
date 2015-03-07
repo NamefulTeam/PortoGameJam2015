@@ -17,7 +17,6 @@ function exports(width, height)
 	end
 
 	function grid:set_space_at(x, y, value)
-		assert(value ==)
 		self.data[index(x, y)] = value
 	end
 
