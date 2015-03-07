@@ -118,18 +118,18 @@ function exports()
 		for i,rect in ipairs(rectanglesToDraw) do
 			glitch_gen.drawGlich(rect["x"], rect["y"], xcount, glitchUpdate)
     	end
-		glitchUpdate = false	
+		
 
 		self.grid_state:draw_objects(xoffset, yoffset)
 
 		for x = 1, xcount, 1 do
 			for y = 1, ycount, 1 do
 				if self.grid_state:get_space_at(x, y) then
-      				love.graphics.setColor(255,0,0)
-					love.graphics.rectangle('fill', (x-1) * grid_unit_size + xoffset, (y-1) * grid_unit_size + yoffset, grid_unit_size, grid_unit_size)
+					glitch_gen.drawGlich( (x-1) * grid_unit_size + xoffset, (y-1) * grid_unit_size + yoffset, xcount, glitchUpdate)
 				end
 			end
     	end
+		glitchUpdate = false	
 
     	-- Button Go to Evolution mode
     	love.graphics.setColor(background_color[1], background_color[2], background_color[3])
