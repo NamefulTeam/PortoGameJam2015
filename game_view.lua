@@ -74,7 +74,6 @@ function exports(round_num)
 	local ycount = (720 - yoffsets) / grid_unit_size
 
 	instance.grid_state = grid_state(xcount, ycount)
-	instance.grid_state:add_object(glider(5, 5, directions.UP))
 
 	instance.player_state = player_state(round_num)
 
