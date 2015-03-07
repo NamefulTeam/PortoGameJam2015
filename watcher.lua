@@ -33,8 +33,17 @@ local function exports(x, y, direction)
 			if grid:get_space_at(next_x, next_y) then
 				grid:set_space_at(next_x, next_y, false)
 			end
-			self.x = next_x
-			self.y = next_y
+			local object = grid:get_object_at(next_x, next_y)
+			if object and object.type == 'glider' then
+				grid:delete_object_at(next_x, next_y)
+				self.x = next_x
+				self.y = next_y
+			elseif object and object.type == 'watcher' then
+				self.direction = directions.invert(self.direction)
+			else
+				self.x = next_x
+				self.y = next_y
+			end
 		else
 			self.direction = directions.invert(self.direction)
 		end
