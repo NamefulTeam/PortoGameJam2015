@@ -119,9 +119,6 @@ function exports()
 			glitch_gen.drawGlich(rect["x"], rect["y"], xcount, glitchUpdate)
     	end
 		
-
-		self.grid_state:draw_objects(xoffset, yoffset)
-
 		for x = 1, xcount, 1 do
 			for y = 1, ycount, 1 do
 				if self.grid_state:get_space_at(x, y) then
@@ -129,6 +126,9 @@ function exports()
 				end
 			end
     	end
+
+		self.grid_state:draw_objects(xoffset, yoffset)
+
 		glitchUpdate = false	
 
     	-- Button Go to Evolution mode

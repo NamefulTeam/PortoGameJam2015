@@ -18,7 +18,7 @@ local function exports(x, y, direction)
 		local next_x = self.x + directions.get_x_diff(self.direction)
 		local next_y = self.y + directions.get_y_diff(self.direction)
 
-		if grid:in_grid(next_x, next_y) then
+		if grid:in_grid(next_x, next_y) and not grid:get_space_at(next_x, next_y) then
 			grid:set_space_at(self.x, self.y, true)
 
 			self.x = next_x
