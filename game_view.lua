@@ -5,6 +5,15 @@ grid_line_width = 0.5
 grid_unit_size = 32
 grid_big_border = 5
 
+-- mouse variables
+mouse_x = 0;
+mouse_y = 0;
+mouseClicked = false;
+
+-- glider variables
+rectanglesToDraw = {}
+numberOfGliders = 0
+
 function draw_line(grid_num, x1, y1, x2, y2)
 	local is_main = grid_num % grid_big_border == 0
 
@@ -37,8 +46,16 @@ function exports()
 		-- Draw Grid
 		local current_x = xoffset
 		local grid_num = 0
+
+		local drawGliderX = 0
+		local drawGliderY = 0
+
 		while grid_num <= xcount do
 			draw_line(grid_num, current_x, yoffset, current_x, 720 - yoffset)
+
+			if mouse_x >= current_x and mouse_x < current_x + grid_unit_size then
+				drawGliderX = current_x
+			end
 
 			current_x = current_x + grid_unit_size
 			grid_num = grid_num + 1
@@ -49,12 +66,38 @@ function exports()
 		while grid_num <= ycount do
 			draw_line(grid_num, xoffset, current_y, 1280 - xoffset, current_y)
 
+			if mouse_y >= current_y and mouse_y < current_y + grid_unit_size then
+				drawGliderY = current_y
+			end
+			
 			current_y = current_y + grid_unit_size
 			grid_num = grid_num + 1
 		end
+
+		if mouseClicked then
+			local pos = {}
+			local posX = "x"
+			local posY = "y"
+			pos[posX] = drawGliderX
+			pos[posY] = drawGliderY
+			numberOfGliders = numberOfGliders + 1
+			rectanglesToDraw[numberOfGliders] = pos
+		end
+
+		for i,rect in ipairs(rectanglesToDraw) do
+      		love.graphics.setColor(255,0,0)
+			love.graphics.rectangle('fill', rect["x"], rect["y"], grid_unit_size, grid_unit_size)
+    	end
+
+		
 	end
 
 	function instance:update()
+
+		mouse_x, mouse_y = love.mouse.getPosition()
+
+		mouseClicked = love.mouse.isDown("l") 
+
 	end
 
 	return instance
