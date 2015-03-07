@@ -5,6 +5,7 @@ directions = require 'directions'
 glider = require 'glider'
 watcher = require 'watcher'
 player_state = require 'player_state'
+stack_trace = require 'stackTrace'
 
 grid_normal_color = {180, 230, 255}
 grid_block_color = {100, 200, 250}
@@ -95,7 +96,7 @@ function exports(round_num)
     local roundWidth = 24
 
 	function instance:draw()
-
+		love.graphics.setColor(255,255,255)
 		love.graphics.draw(background, 0, 0)
 
 		-- Draw Grid
@@ -170,6 +171,8 @@ function exports(round_num)
 		for i = 1, self.player_state.numberOfRounds, 1 do
 			love.graphics.draw(self.roundImage, roundX - (roundWidth+2)*(i-1),roundY)
 		end
+
+		stack_trace.draw_stack(self.grid_state, love.window.getWidth()-250, 100,love.mouse.getX(),love.mouse.getY())
 	end
 
 	function instance:update()
