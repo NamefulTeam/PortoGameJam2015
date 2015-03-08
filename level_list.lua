@@ -21,6 +21,9 @@ function exports.next_level(level)
 	return levels[level.id + 1]
 end
 
-add_level('levels.test_level')
+--add_level('levels.test_level')
+add_level('levels.level1')
+add_level('levels.level2')
+
 
 return exports
