@@ -18,10 +18,14 @@ function exports()
 	local levelStartY = 100
 	local levels = level_list.get_levels()
 
+	local lastFrameMouseClicked = true
+
 	function instance:update()
 		local mouse_x, mouse_y = love.mouse.getPosition()
 		
-		if love.mouse.isDown('l') then
+		local mouseClicked = love.mouse.isDown('l')
+
+		if mouseClicked and not lastFrameMouseClicked then
 			if mouse_x >= backX and mouse_y >= backY and mouse_x < backX + backWidth and mouse_y < backY + backHeight then
 				active_screen.set(require('initial_menu_view')())
 			end
@@ -29,9 +33,15 @@ function exports()
 			local x = levelStartX
 			local y = levelStartY
 			for i = 1, #levels do
-				active_screen.set(game_view(levels[i]))
+				x = x + 32
+
+				if mouse_x >= x and mouse_y >= y and mouse_x < x + 32 and mouse_y < y + 32 then
+					active_screen.set(game_view(levels[i]))
+				end
 			end
 		end
+
+		lastFrameMouseClicked = mouseClicked
 	end
 
 	function instance:draw()
@@ -43,6 +53,8 @@ function exports()
 		local x = levelStartX
 		local y = levelStartY
 		for i = 1, #levels do
+			x = x + 32
+
 			love.graphics.draw(levelButton, x, y)
 		end
 	end
