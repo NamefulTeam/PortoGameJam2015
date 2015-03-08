@@ -14,7 +14,7 @@ local function exports(x, y, direction)
 	instance.image = love.graphics.newImage('placeholders/watcher.png')
 	instance.quad = love.graphics.newQuad(0, 0, 32, 32, 32, 32)
 
-	function instance:update(grid)
+	function instance:update(grid, pending_events)
 		assert(grid:in_grid(self.x, self.y))
 
 		--find dirty cells
@@ -62,13 +62,21 @@ local function exports(x, y, direction)
 		end
 	end
 
-	function instance:suffer_explosion(grid)
-		grid:replace_object(self, glider(self.x, self.y, self.direction))
+	function instance:suffer_explosion(grid, pending_events)
+		self.highlight_death = true
+		table.insert(pending_events, function()
+			grid:replace_object(self, glider(self.x, self.y, self.direction))
+		end)
 	end
 
 	function instance:draw(offset_x, offset_y)
 		local actual_x = offset_x + self.x * 32
 		local actual_y = offset_y + self.y * 32
+
+		if self.highlight_death then
+			love.graphics.setColor(255, 0, 0)
+			love.graphics.rectangle('line', actual_x - 32, actual_y - 32, 32, 32)
+		end
 
 		love.graphics.setColor(255,255,255)
 		love.graphics.draw(self.image, self.quad, actual_x - 16, actual_y - 16, directions.get_angle(self.direction), 1, 1, 16, 16)
