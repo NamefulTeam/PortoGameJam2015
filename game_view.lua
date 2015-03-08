@@ -243,7 +243,7 @@ function exports(level_description)
 					end
 
 					if self.player_state.gameOver then
-						active_screen.set(game_over_view())
+						active_screen.set(game_over_view(level_description))
 						return
 					end
 				else

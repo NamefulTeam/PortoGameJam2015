@@ -7,7 +7,7 @@ function exports()
 	local instance = {}
 
 	local background = love.graphics.newImage('background/background_light.png')
-	local gameOverImage = love.graphics.newImage('background/gameOverBackground.png')
+	local gameOverImage = love.graphics.newImage('background/gameWonBackground.png')
 	local newGameButton = love.graphics.newImage('placeholders/new_game.png')
 
 	function instance:draw()
