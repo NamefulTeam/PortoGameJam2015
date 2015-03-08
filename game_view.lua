@@ -131,6 +131,20 @@ function exports(level_description)
     local processingImage = love.graphics.newImage('header/processing.png')
     local gameOverImage = love.graphics.newImage('header/game_over.png')
 
+    local stopImage = love.graphics.newImage('game_speed/stop.png')
+    local stopSelectedImage = love.graphics.newImage('game_speed/stop_selected.png')
+    local playImage = love.graphics.newImage('game_speed/play.png')
+    local playSelectedImage = love.graphics.newImage('game_speed/play_selected.png')
+    local fastImage = love.graphics.newImage('game_speed/fast.png')
+    local fastSelectedImage = love.graphics.newImage('game_speed/fast_selected.png')
+
+    local NORMAL_SPEED = 1
+    local FAST_SPEED = 4
+    local game_speed = NORMAL_SPEED
+
+    local speedButtonX = goButtonX
+    local speedButtonY = goButtonY - 40
+
 	function instance:draw()
 		love.graphics.setColor(255,255,255)
 		love.graphics.draw(background, 0, 0)
@@ -204,15 +218,22 @@ function exports(level_description)
 
 		self.grid_state:draw_objects(xoffset, yoffset)
 
-		glitchUpdate = false	
+		glitchUpdate = false
 
-		if self.grid_state.mode == instance.grid_state.MODE_SIGNAL and not self.player_state.gameOver then
-	    	-- Button Go to Evolution mode
-	    	love.graphics.setColor(255, 255, 255)
-			love.graphics.draw(self.goButtonImage, goButtonX, goButtonY)
+		-- Button Go to Evolution mode
+		love.graphics.setColor(255, 255, 255)
+		if not self.player_state.gameOver then
+			if self.grid_state.mode == instance.grid_state.MODE_SIGNAL then
+				love.graphics.draw(self.goButtonImage, goButtonX, goButtonY)
+			end
+
+
+			love.graphics.draw(game_speed == 0 and stopSelectedImage or stopImage, speedButtonX, speedButtonY)
+			love.graphics.draw(game_speed == NORMAL_SPEED and playSelectedImage or playImage, speedButtonX + 40, speedButtonY)
+			love.graphics.draw(game_speed == FAST_SPEED and fastSelectedImage or fastImage, speedButtonX + 80, speedButtonY)
 		end
-			love.graphics.draw(self.retryButtonImage, goButtonX, retryButtonY)
-			love.graphics.draw(self.menuButtonImage, goButtonX, menuButtonY)
+		love.graphics.draw(self.retryButtonImage, goButtonX, retryButtonY)
+		love.graphics.draw(self.menuButtonImage, goButtonX, menuButtonY)
 
 		-- rounds
 		for i = 1, self.player_state.numberOfGliders, 1 do
@@ -235,6 +256,18 @@ function exports(level_description)
 
 		local wasClicked = mouseClicked
 		mouseClicked = love.mouse.isDown("l")
+
+		if mouseClicked and not lastFrameMouseClicked then
+			if mouse_x >= speedButtonX - 4 and mouse_y >= speedButtonY and mouse_y < speedButtonY + 32 then
+				if mouse_x <= speedButtonX + 36 then
+					game_speed = 0
+				elseif mouse_x <= speedButtonX + 76 then
+					game_speed = NORMAL_SPEED
+				else
+					game_speed = FAST_SPEED
+				end
+			end
+		end
 
 		if self.grid_state.mode == instance.grid_state.MODE_SIGNAL then
 		
@@ -279,7 +312,7 @@ function exports(level_description)
 			end
 		else
 			if #pending_events > 0 then
-				if tick_time >= 8 then
+				if tick_time >= 10 then
 					tick_time = 0
 
 					local next_event = pending_events[1]
@@ -289,9 +322,9 @@ function exports(level_description)
 					next_event()
 					self:kill_dead_objects()
 				else
-					tick_time = tick_time + 1
+					tick_time = tick_time + game_speed
 				end
-			elseif tick_time >= 3 then
+			elseif tick_time >= 4 then
 				tick_time = 0
 
 				if hasWon(self.grid_state, self.player_state) then
@@ -331,7 +364,7 @@ function exports(level_description)
 				end
 			
 			else
-				tick_time = tick_time + 1
+				tick_time = tick_time + game_speed
 			end
 		end
 
