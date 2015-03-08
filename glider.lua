@@ -28,6 +28,13 @@ local function exports(x, y, direction)
 
 				self.x = next_x
 				self.y = next_y
+
+				local tile_at_new_position = grid:get_tile_at(next_x, next_y)
+				if tile_at_new_position ~= nil then
+					if tile_at_new_position.type == 'diverter' then
+						self.direction = tile_at_new_position.direction
+					end
+				end
 			elseif found_object.type == 'glider' then
 				self.highlight_death = true
 				table.insert(pending_events, function ()

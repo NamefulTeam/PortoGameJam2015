@@ -150,6 +150,8 @@ function exports(level_description)
 			end
 		end
 
+		self.grid_state:draw_tiles(xoffset, yoffset)
+
 		-- Draw Grid
 		local current_x = xoffset
 		local grid_num = 0
