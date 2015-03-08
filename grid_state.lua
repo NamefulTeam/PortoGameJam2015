@@ -3,6 +3,8 @@ local function exports(width, height)
 	grid.data = {}
 	grid.first_object = nil
 	grid.last_object = nil
+	grid.width = width
+	grid.height = height
 
 	function index(x, y)
 		return (y - 1) * width + x

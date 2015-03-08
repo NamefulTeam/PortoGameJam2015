@@ -9,7 +9,7 @@ numberOfRounds = 5
 function love.load()
 	love.window.setMode(width, height, { fullscreen = true })
 
-	active_screen.set(initial_menu_view(numberOfRounds))
+	active_screen.set(initial_menu_view())
 end
 
 function love.draw()

@@ -1,8 +1,9 @@
 -- imports
 active_screen = require 'active_screen'
 game_view = require 'game_view'
+level_list = require 'level_list'
 
-function exports(numberOfRounds)
+function exports()
 	local instance = {}
 
 	local background = love.graphics.newImage('background/title_background.png')
@@ -27,7 +28,7 @@ function exports(numberOfRounds)
 
 		if love.mouse.isDown("l") and mouse_x > newGameX and mouse_x <= newGameX + newGameWidth and mouse_y > newGameY and mouse_y <= newGameY + newGameHeight then
 			game_view = require 'game_view'
-			active_screen.set(game_view(numberOfRounds))
+			active_screen.set(game_view(level_list.first_level()))
 			return
 		end
 
