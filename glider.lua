@@ -31,11 +31,10 @@ local function exports(x, y, direction)
 				-- Blow up
 				self:explode(grid)
 			elseif found_object.type == 'watcher' then
-				grid:delete_object(self)
+				instance.isDead = true
 			end
 		else
 			grid:set_space_at(self.x, self.y, true)
-			--grid:delete_object(self)
 			instance.isDead = true
 		end
 	end
@@ -57,7 +56,6 @@ local function exports(x, y, direction)
 	end
 
 	function instance:suffer_explosion(grid)
-		--grid:delete_object(self)
 		instance.isDead = true
 		self:explode(grid)
 	end
