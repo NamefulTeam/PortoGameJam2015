@@ -69,6 +69,10 @@ function exports(level_description)
 
 	local function processGoButtonClicked(grid_state, player_state)
 		if not player_state.won then
+			if player_state.gameOver then
+				active_screen.set(game_over_view(level_description))
+			end
+
 			player_state:endRound()
 
 			gliderPlaced = false
@@ -128,12 +132,15 @@ function exports(level_description)
 
     local signalImage = love.graphics.newImage('header/signal.png')
     local processingImage = love.graphics.newImage('header/processing.png')
+    local gameOverImage = love.graphics.newImage('header/game_over.png')
 
 	function instance:draw()
 		love.graphics.setColor(255,255,255)
 		love.graphics.draw(background, 0, 0)
 
-		if instance.grid_state.mode == instance.grid_state.MODE_SIGNAL then
+		if self.player_state.gameOver then
+			love.graphics.draw(gameOverImage, 10, 10)
+		elseif instance.grid_state.mode == instance.grid_state.MODE_SIGNAL then
 			love.graphics.draw(signalImage, 10, 10)
 		else
 			love.graphics.draw(processingImage, 10, 10)
@@ -200,7 +207,7 @@ function exports(level_description)
 
 		glitchUpdate = false	
 
-		if self.grid_state.mode == instance.grid_state.MODE_SIGNAL then
+		if self.grid_state.mode == instance.grid_state.MODE_SIGNAL and not self.player_state.gameOver then
 	    	-- Button Go to Evolution mode
 	    	love.graphics.setColor(255, 255, 255)
 			love.graphics.draw(self.goButtonImage, goButtonX, goButtonY)
@@ -236,7 +243,7 @@ function exports(level_description)
 
 				target_x = math.floor((mouse_x - xoffset) / grid_unit_size) + 1
 				target_y = math.floor((mouse_y - yoffset) / grid_unit_size) + 1
-				if self.grid_state:in_grid(target_x, target_y) and 
+				if  not self.player_state.gameOver and self.grid_state:in_grid(target_x, target_y) and 
 					not self.grid_state:get_space_at(target_x, target_y) and
 					placeable_utils.contains(self.grid_state.placeable,target_x,target_y) then
 
@@ -255,7 +262,7 @@ function exports(level_description)
 						self.grid_state:add_object(lastGlider)
 						gliderPlaced = true
 					end
-				elseif mouse_x > goButtonX and mouse_x <= goButtonX + goButtonWidth and mouse_y > goButtonY and mouse_y <= goButtonY + goButtonHeight and not lastFrameMouseClicked then
+				elseif mouse_x > goButtonX and mouse_x <= goButtonX + goButtonWidth and mouse_y > goButtonY and mouse_y <= goButtonY + goButtonHeight and not lastFrameMouseClicked and not self.player_state.gameOver then
 					processGoButtonClicked(self.grid_state, self.player_state)
 				elseif mouse_x > goButtonX and mouse_x <= goButtonX + goButtonWidth and mouse_y > retryButtonY and mouse_y <= retryButtonY + goButtonHeight and not lastFrameMouseClicked then
 					active_screen.set(game_view(level_description))
@@ -288,13 +295,11 @@ function exports(level_description)
 					current_object = nil
 
 					if hasWon(self.grid_state, self.player_state) then
-						current_object = nil
 						levelWon()
 						return
 					end
 
 					if self.player_state.gameOver then
-						active_screen.set(game_over_view(level_description))
 						return
 					end
 				else
