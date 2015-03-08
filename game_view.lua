@@ -38,8 +38,10 @@ function draw_line(grid_num, x1, y1, x2, y2)
 	love.graphics.line(x1, y1, x2, y2)
 end
 
-function exports(round_num)
+function exports(level_description)
 	local instance = {}
+
+	instance.level_description = level_description
 
 	local mouseClicked = false;
 	local lastFrameMouseClicked = true;
@@ -97,6 +99,9 @@ function exports(round_num)
 	for watcherI=1,1 do
 		instance.grid_state:add_object(watcher(math.random(1,xcount), math.random(1,ycount), directions.DOWN))
 	end
+
+	instance.player_state = player_state(level_description.number_of_rounds)
+	level_description.setup(instance.grid_state)
 
     instance.goButtonImage = love.graphics.newImage( "placeholders/goButton.png" )
     local goButtonX = love.window.getWidth()-225

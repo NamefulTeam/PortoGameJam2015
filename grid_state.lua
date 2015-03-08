@@ -3,6 +3,8 @@ local function exports(width, height)
 	grid.data = {}
 	grid.first_object = nil
 	grid.last_object = nil
+	grid.width = width
+	grid.height = height
 
 		-- grid state
 	grid.MODE_SIGNAL = 'signal'
