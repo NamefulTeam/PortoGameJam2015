@@ -222,7 +222,7 @@ function exports(level_description)
 		-- Button Go to Evolution mode
 		love.graphics.setColor(255, 255, 255)
 		if not self.player_state.gameOver then
-			if self.grid_state.mode == instance.grid_state.MODE_SIGNAL then
+			if self.grid_state.mode == instance.grid_state.MODE_SIGNAL or self.player_state.won then
 				love.graphics.draw(self.goButtonImage, goButtonX, goButtonY)
 			end
 
@@ -257,6 +257,10 @@ function exports(level_description)
 		mouseClicked = love.mouse.isDown("l")
 
 		if mouseClicked and not lastFrameMouseClicked then
+
+			if self.player_state.won and mouse_x > goButtonX and mouse_x <= goButtonX + goButtonWidth and mouse_y > goButtonY and mouse_y <= goButtonY + goButtonHeight and not self.player_state.gameOver then
+				processGoButtonClicked(self.grid_state, self.player_state)
+			end
 			if mouse_x >= speedButtonX - 4 and mouse_y >= speedButtonY and mouse_y < speedButtonY + 32 then
 				if mouse_x <= speedButtonX + 36 then
 					game_speed = 0
