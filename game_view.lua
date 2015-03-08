@@ -129,6 +129,7 @@ function exports(level_description)
     local signalImage = love.graphics.newImage('header/signal.png')
     local processingImage = love.graphics.newImage('header/processing.png')
     local gameOverImage = love.graphics.newImage('header/game_over.png')
+    local successImage = love.graphics.newImage('header/success.png')
 
     local stopImage = love.graphics.newImage('game_speed/stop.png')
     local stopSelectedImage = love.graphics.newImage('game_speed/stop_selected.png')
@@ -148,7 +149,9 @@ function exports(level_description)
 		love.graphics.setColor(255,255,255)
 		love.graphics.draw(background, 0, 0)
 
-		if self.player_state.gameOver then
+		if self.player_state.won then
+			love.graphics.draw(successImage, 10, 10)
+		elseif self.player_state.gameOver then
 			love.graphics.draw(gameOverImage, 10, 10)
 		elseif instance.grid_state.mode == instance.grid_state.MODE_SIGNAL then
 			love.graphics.draw(signalImage, 10, 10)
