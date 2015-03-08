@@ -9,6 +9,10 @@ numberOfRounds = 5
 function love.load()
 	love.window.setMode(width, height, { fullscreen = true })
 
+	music = love.audio.newSource('techy.ogg')
+	music:setLooping(true)
+	love.audio.play(music)
+
 	active_screen.set(initial_menu_view())
 end
 

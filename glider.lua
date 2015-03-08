@@ -1,4 +1,5 @@
 local directions = require 'directions'
+local sounds = require 'sounds'
 
 local function exports(x, y, direction)
 	assert(directions.is_direction(direction))
@@ -66,7 +67,7 @@ local function exports(x, y, direction)
 
 	function instance:explode(grid, pending_events)
 		assert(pending_events ~= nil)
-
+		love.audio.play(sounds.explosionSource)
 		for dy = -1, 1 do
 			for dx = -1, 1 do
 				local x = self.x + dx
