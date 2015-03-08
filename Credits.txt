@@ -1,0 +1,29 @@
+---------- GLIDING GLITCH CREDITS -----------
+
+--- NAMEFUL TEAM ---
+
+Afonso Rosa
+
+João Ponte
+
+Luís Reis
+
+--- TECHNOLOGIES AND TOOLS ---
+
+Löve2D with Lua
+
+Python
+
+Sublime Text 2
+
+--- USED RESOURCES FROM ---
+
+"Carefree" Kevin MacLeod (incompetech.com) 
+Licensed under Creative Commons: By Attribution 3.0
+http://creativecommons.org/licenses/by/3.0/
+
+Eric Taylors Free-Music Pack
+
+Creative Commons Attribution 4.0 International (CC BY 4.0)
+
+Everything else belongs to the Nameful Team.
