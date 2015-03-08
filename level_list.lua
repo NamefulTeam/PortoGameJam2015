@@ -29,5 +29,6 @@ end
 add_level('levels.level3')
 add_level('levels.level2')
 add_level('levels.level3')
+add_level('levels.level5')
 
 return exports
