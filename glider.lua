@@ -1,4 +1,4 @@
-directions = require 'directions'
+local directions = require 'directions'
 
 local function exports(x, y, direction)
 	assert(directions.is_direction(direction))
@@ -36,7 +36,9 @@ local function exports(x, y, direction)
 					found_object:suffer_explosion(grid, pending_events, self.x, self.y)
 				end)
 			elseif found_object.type == 'watcher' then
-				instance.isDead = true
+				self:schedule_death(pending_events)
+			elseif found_object.type == 'wall' then
+				self:schedule_death(pending_events)
 			end
 		else
 			grid:set_space_at(self.x, self.y, true)
@@ -45,6 +47,13 @@ local function exports(x, y, direction)
 				instance.isDead = true
 			end)
 		end
+	end
+
+	function instance:schedule_death(pending_events)
+		self.highlight_death = true
+		table.insert(pending_events, function ()
+			self.isDead = true
+		end)
 	end
 
 	function instance:explode(grid, pending_events)
