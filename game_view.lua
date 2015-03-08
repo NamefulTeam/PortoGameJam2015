@@ -48,17 +48,14 @@ function exports(level_description)
 	local mouseClicked = false;
 	local lastFrameMouseClicked = true;
 	local block_size = grid_unit_size * grid_big_border
-	available_width = 1280 - 250
-	local xoffsets = available_width % block_size
-	if xoffsets == 0 then
-		xoffsets = block_size
-	end
-	local xoffset = xoffsets / 2
-	local xcount = (available_width - xoffsets) / grid_unit_size
+
+	local available_width = 1280 - 250
 	local available_height = 720 - 20
-	local yoffsets = available_height % block_size
-	local yoffset = yoffsets / 2 + 20
-	local ycount = (available_height - yoffsets) / grid_unit_size
+	local xcount = level_description.grid_width
+	local ycount = level_description.grid_height
+
+	local xoffset = (available_width - (xcount * grid_unit_size)) / 2
+	local yoffset = (available_height - (ycount * grid_unit_size)) / 2
 
 	local gliderPlaced = false
 
@@ -120,7 +117,6 @@ function exports(level_description)
     local background = love.graphics.newImage('background/background_light.png')
     instance.roundImage = love.graphics.newImage("placeholders/round.png")
     local roundX = (xcount-0.7) * grid_unit_size + xoffset
-    local roundY = 0.4 * grid_unit_size
     local roundWidth = 24
 
     local signalImage = love.graphics.newImage('header/signal.png')
@@ -131,9 +127,9 @@ function exports(level_description)
 		love.graphics.draw(background, 0, 0)
 
 		if instance.grid_state.mode == instance.grid_state.MODE_SIGNAL then
-			love.graphics.draw(signalImage, xoffset, 17)
+			love.graphics.draw(signalImage, xoffset, yoffset - 50)
 		else
-			love.graphics.draw(processingImage, xoffset, 17)
+			love.graphics.draw(processingImage, xoffset, yoffset - 50)
 		end
 
 		if self.grid_state.mode == self.grid_state.MODE_SIGNAL then
@@ -205,7 +201,7 @@ function exports(level_description)
 
 		-- rounds
 		for i = 1, self.player_state.numberOfRounds, 1 do
-			love.graphics.draw(self.roundImage, roundX - (roundWidth+2)*(i-1),roundY)
+			love.graphics.draw(self.roundImage, roundX - (roundWidth+2)*(i-1), yoffset - 35)
 		end
 	end
 
