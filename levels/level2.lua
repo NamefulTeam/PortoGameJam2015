@@ -27,6 +27,6 @@ end
 
 exports.grid_width = 15
 exports.grid_height = 10
-exports.number_of_rounds = 4
+exports.number_of_rounds = 2
 
 return exports
