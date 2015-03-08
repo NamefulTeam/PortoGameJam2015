@@ -22,10 +22,6 @@ mouse_y = 0;
 -- glider variables
 rectanglesToDraw = {}
 
--- grid state
-MODE_SIGNAL = 'signal'
-MODE_EVOLUTION = 'evolution'
-
 evolution_phases = 5
 
 -- visual glitch state
@@ -65,7 +61,7 @@ function exports(level_description)
 	local gliderPlaced = false
 
 	instance.grid_state = grid_state(xcount, ycount)
-	instance.grid_state.mode = MODE_SIGNAL
+	instance.grid_state.mode = instance.grid_state.MODE_SIGNAL
 
 	local function gliderClicked()
 		lastGlider.direction = directions.rotate_clockwise(lastGlider.direction)
@@ -75,7 +71,7 @@ function exports(level_description)
 		player_state:endRound()
 
 		gliderPlaced = false
-		instance.grid_state.mode = MODE_EVOLUTION
+		instance.grid_state.mode = instance.grid_state.MODE_EVOLUTION
 		tick_time = 0
 		evolution_phase = 1
 	end
@@ -102,7 +98,7 @@ function exports(level_description)
 		love.graphics.setColor(255,255,255)
 		love.graphics.draw(background, 0, 0)
 
-		if instance.grid_state.mode == MODE_SIGNAL then
+		if instance.grid_state.mode == instance.grid_state.MODE_SIGNAL then
 			love.graphics.draw(signalImage, xoffset, 17)
 		else
 			love.graphics.draw(processingImage, xoffset, 17)
@@ -158,7 +154,7 @@ function exports(level_description)
 
 		glitchUpdate = false	
 
-		if self.grid_state.mode == MODE_SIGNAL then
+		if self.grid_state.mode == instance.grid_state.MODE_SIGNAL then
 	    	-- Button Go to Evolution mode
 	    	love.graphics.setColor(255, 255, 255)
 			love.graphics.draw(self.goButtonImage, goButtonX, goButtonY)
@@ -176,7 +172,7 @@ function exports(level_description)
 		local wasClicked = mouseClicked
 		mouseClicked = love.mouse.isDown("l")
 
-		if self.grid_state.mode == MODE_SIGNAL then
+		if self.grid_state.mode == instance.grid_state.MODE_SIGNAL then
 		
 			if mouseClicked then
 
@@ -209,7 +205,7 @@ function exports(level_description)
 			if tick_time >= 3 then
 				tick_time = 0
 				if evolution_phase > evolution_phases then
-					self.grid_state.mode = MODE_SIGNAL
+					self.grid_state.mode = instance.grid_state.MODE_SIGNAL
 					current_object = nil
 
 					if self.player_state.gameOver then

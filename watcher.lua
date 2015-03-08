@@ -48,8 +48,7 @@ local function exports(x, y, direction)
 			end
 			local object = grid:get_object_at(next_x, next_y)
 			if object and object.type == 'glider' then
-				--grid:delete_object(object)
-				instance.isDead = true
+				object.isDead = true
 				self.x = next_x
 				self.y = next_y
 			elseif object and object.type == 'watcher' then
