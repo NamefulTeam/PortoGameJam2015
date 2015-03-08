@@ -157,6 +157,8 @@ function exports(level_description)
 			end
 		end
 
+		self.grid_state:draw_tiles(xoffset, yoffset)
+
 		-- Draw Grid
 		local current_x = xoffset
 		local grid_num = 0
@@ -239,25 +241,29 @@ function exports(level_description)
 
 		if self.grid_state.mode == instance.grid_state.MODE_SIGNAL then
 		
-			if mouseClicked then
+			target_x = math.floor((mouse_x - xoffset) / grid_unit_size) + 1
+			target_y = math.floor((mouse_y - yoffset) / grid_unit_size) + 1
 
-				target_x = math.floor((mouse_x - xoffset) / grid_unit_size) + 1
-				target_y = math.floor((mouse_y - yoffset) / grid_unit_size) + 1
-				if  not self.player_state.gameOver and self.grid_state:in_grid(target_x, target_y) and 
+			if love.mouse.isDown("r") then
+				if gliderPlaced and lastGlider.x == target_x and lastGlider.y == target_y then
+					self.grid_state:delete_object(lastGlider)
+					lastGlider = nil
+					gliderPlaced = false
+				end
+			end
+			if mouseClicked then
+				if  not self.player_state.gameOver and self.grid_state:in_grid(target_x, target_y) and
 					not self.grid_state:get_space_at(target_x, target_y) and
 					placeable_utils.contains(self.grid_state.placeable,target_x,target_y) then
 
 					if gliderPlaced then
 						if lastGlider.x == target_x and lastGlider.y == target_y and not lastFrameMouseClicked then
-							print('rotate')
 							gliderClicked()
 						elseif self.grid_state:get_object_at(target_x, target_y) == nil then
-							print('move')
 							lastGlider.x = target_x
 							lastGlider.y = target_y
 						end
 					elseif self.grid_state:get_object_at(target_x, target_y) == nil and not lastFrameMouseClicked then
-						print('place')
 						lastGlider = glider(target_x, target_y, directions.DOWN)
 						self.grid_state:add_object(lastGlider)
 						gliderPlaced = true

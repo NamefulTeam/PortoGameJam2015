@@ -58,6 +58,13 @@ local function exports(x, y, direction)
 			else
 				self.x = next_x
 				self.y = next_y
+
+				local tile_at_new_position = grid:get_tile_at(next_x, next_y)
+				if tile_at_new_position ~= nil then
+					if tile_at_new_position.type == 'diverter' then
+						self.direction = tile_at_new_position.direction
+					end
+				end
 			end
 		else
 			self.direction = directions.invert(self.direction)

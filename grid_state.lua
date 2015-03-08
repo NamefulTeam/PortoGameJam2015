@@ -11,6 +11,7 @@ local function exports(width, height)
 	grid.MODE_SIGNAL = 'signal'
 	grid.MODE_EVOLUTION = 'evolution'
 
+	grid.tiles = {}
 	grid.placeable = {}
 
 	function index(x, y)
@@ -29,6 +30,22 @@ local function exports(width, height)
 
 	function grid:set_space_at(x, y, value)
 		self.data[index(x, y)] = value
+	end
+
+	function grid:get_tile_at(x, y)
+		for k, v in pairs(self.tiles) do
+			if v.x == x and v.y == y then
+				return v
+			end
+		end
+		return nil
+	end
+
+	function grid:add_tile(tile)
+		assert(tile ~= nil)
+		assert(self:get_tile_at(tile.x, tile.y) == nil)
+		
+		table.insert(self.tiles, tile)
 	end
 
 	function grid:add_object(object)
@@ -118,6 +135,12 @@ local function exports(width, height)
 			assert(current_object.placed)
 			current_object:draw(offset_x, offset_y)
 			current_object = current_object.next
+		end
+	end
+
+	function grid:draw_tiles(offset_x, offset_y)
+		for k, v in pairs(self.tiles) do
+			v:draw(offset_x, offset_y)
 		end
 	end
 
