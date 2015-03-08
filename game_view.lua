@@ -9,6 +9,7 @@ stack_trace = require 'stackTrace'
 active_screen = require 'active_screen'
 game_over_view = require 'game_over_view'
 game_won = require 'game_won'
+placeable_utils = require 'placeables'
 
 grid_normal_color = {180, 230, 255}
 grid_block_color = {100, 200, 250}
@@ -135,6 +136,17 @@ function exports(level_description)
 			love.graphics.draw(processingImage, xoffset, 17)
 		end
 
+		if self.grid_state.mode == self.grid_state.MODE_SIGNAL then
+			love.graphics.setColor(240,240,240)
+			love.graphics.rectangle("fill", xoffset,yoffset,grid_unit_size*xcount, grid_unit_size*ycount)
+
+			--placeable stuff
+			love.graphics.setColor(255,255,255)
+			for place_index, place in pairs(self.grid_state.placeable) do
+				love.graphics.rectangle("fill",xoffset+(place[1]-1)*grid_unit_size, yoffset+(place[2]-1)*grid_unit_size, grid_unit_size,grid_unit_size)
+			end
+		end
+
 		-- Draw Grid
 		local current_x = xoffset
 		local grid_num = 0
@@ -219,9 +231,9 @@ function exports(level_description)
 
 				target_x = math.floor((mouse_x - xoffset) / grid_unit_size) + 1
 				target_y = math.floor((mouse_y - yoffset) / grid_unit_size) + 1
-
 				if self.grid_state:in_grid(target_x, target_y) and 
-					not self.grid_state:get_space_at(target_x, target_y) then
+					not self.grid_state:get_space_at(target_x, target_y) and
+					placeable_utils.contains(self.grid_state.placeable,target_x,target_y) then
 
 					if gliderPlaced then
 						if lastGlider.x == target_x and lastGlider.y == target_y and not lastFrameMouseClicked then

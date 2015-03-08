@@ -5,10 +5,13 @@ local function exports(width, height)
 	grid.last_object = nil
 	grid.width = width
 	grid.height = height
+	grid.is_setup = false
 
 		-- grid state
 	grid.MODE_SIGNAL = 'signal'
 	grid.MODE_EVOLUTION = 'evolution'
+
+	grid.placeable = {}
 
 	function index(x, y)
 		return (y - 1) * width + x
