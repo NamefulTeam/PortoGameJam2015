@@ -130,6 +130,17 @@ function exports(level_description)
 			love.graphics.draw(processingImage, xoffset, 17)
 		end
 
+		if self.grid_state.mode == self.grid_state.MODE_SIGNAL then
+			love.graphics.setColor(240,240,240)
+			love.graphics.rectangle("fill", xoffset,yoffset,grid_unit_size*xcount, grid_unit_size*ycount)
+
+			--placeable stuff
+			love.graphics.setColor(255,255,255)
+			for place_index, place in pairs(self.grid_state.placeable) do
+				love.graphics.rectangle("fill",xoffset+place[1]*grid_unit_size, yoffset+place[2]*grid_unit_size, grid_unit_size,grid_unit_size)
+			end
+		end
+
 		-- Draw Grid
 		local current_x = xoffset
 		local grid_num = 0
