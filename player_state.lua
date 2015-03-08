@@ -15,6 +15,13 @@ function exports(glider_num)
 		end
 	end
 
+	function player:removeGlider()
+
+		if player.numberOfGliders < glider_num then
+			player.numberOfGliders = player.numberOfGliders + 1
+		end
+	end
+
 	return player
 end
 

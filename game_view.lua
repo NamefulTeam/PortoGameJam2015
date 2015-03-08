@@ -242,10 +242,11 @@ function exports(level_description)
 			target_y = math.floor((mouse_y - yoffset) / grid_unit_size) + 1
 
 			if love.mouse.isDown("r") then
-				if gliderPlaced and lastGlider.x == target_x and lastGlider.y == target_y then
-					self.grid_state:delete_object(lastGlider)
+				if placeable_utils.contains(self.grid_state.placeable,target_x,target_y) and self.grid_state:get_object_at(target_x, target_y) ~= nil then
+					self.grid_state:delete_object(self.grid_state:get_object_at(target_x, target_y))
 					lastGlider = nil
 					gliderPlaced = false
+					self.player_state.removeGlider()
 				end
 			end
 			if mouseClicked then
