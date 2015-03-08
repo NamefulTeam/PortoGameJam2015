@@ -74,9 +74,27 @@ function exports(round_num)
 		evolution_phase = 1
 	end
 
+	local function hasWon(grid_state)
+		local won = true
+
+		for x = 1, xcount, 1 do
+			for y = 1, ycount, 1 do
+				if grid_state:get_object_at(x, y) ~= nil and grid_state:get_object_at(x, y).type == 'watcher' then
+					won = false
+				end
+			end
+    	end
+
+    	return won
+	end
+
+	local function levelWon()
+		instance.goButtonImage = love.graphics.newImage( "placeholders/next.png" )
+	end
+
 	instance.player_state = player_state(round_num)
 
-	for watcherI=1,5 do
+	for watcherI=1,1 do
 		instance.grid_state:add_object(watcher(math.random(1,xcount), math.random(1,ycount), directions.DOWN))
 	end
 
@@ -208,6 +226,11 @@ function exports(round_num)
 				if evolution_phase > evolution_phases then
 					self.grid_state.mode = instance.grid_state.MODE_SIGNAL
 					current_object = nil
+
+					if hasWon(self.grid_state) then
+						levelWon()
+						return
+					end
 
 					if self.player_state.gameOver then
 						active_screen.set(game_over_view())
