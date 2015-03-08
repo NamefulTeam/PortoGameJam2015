@@ -28,11 +28,16 @@ function exports.draw_stack(grid, x, y, mouse_x, mouse_y, offset_x, offset_y, cu
 			love.graphics.setColor(64,64,255)
 		end
 
-		if (current == nil and current_object == grid.last_object) or (current ~= nil and current.prev == current_object) then
-			love.graphics.print("> at "..current_object.type..".lua: line "..current_object.x.." column "..current_object.y, x+5, y+index*25+5)
+		local atText
+		if current == nil and current_object == grid.last_object  and grid.mode == grid.MODE_EVOLUTION then
+			atText = '> at '
+		elseif current ~= nil and current == current_object then
+			atText = '> at '
 		else
-			love.graphics.print("  at "..current_object.type..".lua: line "..current_object.x.." column "..current_object.y, x+5, y+index*25+5)
+			atText = '  at '
 		end
+
+		love.graphics.print(atText..current_object.type..".lua: line "..current_object.x.." column "..current_object.y, x+5, y+index*25+5)
 		
 		current_object = current_object.next
 		index = index + 1

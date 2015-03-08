@@ -4,6 +4,10 @@ local function exports(width, height)
 	grid.first_object = nil
 	grid.last_object = nil
 
+		-- grid state
+	grid.MODE_SIGNAL = 'signal'
+	grid.MODE_EVOLUTION = 'evolution'
+
 	function index(x, y)
 		return (y - 1) * width + x
 	end
