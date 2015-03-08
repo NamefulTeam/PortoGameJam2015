@@ -282,10 +282,12 @@ function exports(level_description)
 			elseif tick_time >= 3 then
 				tick_time = 0
 				if evolution_phase > evolution_phases then
-					self.grid_state.mode = instance.grid_state.MODE_SIGNAL
+
+		    		self.grid_state.mode = instance.grid_state.MODE_SIGNAL
 					current_object = nil
 
 					if hasWon(self.grid_state, self.player_state) then
+						current_object = nil
 						levelWon()
 						return
 					end
@@ -306,7 +308,25 @@ function exports(level_description)
 						self:kill_dead_objects()
 						current_object = current_object.next
 						if current_object == nil then
-							evolution_phase = evolution_phase + 1
+
+							if self.player_state.noMoreRounds then 
+
+								self.player_state.gameOver = true
+
+								for x = 1, xcount, 1 do
+									for y = 1, ycount, 1 do
+										if self.grid_state:get_object_at(x, y) ~= nil and self.grid_state:get_object_at(x, y).type == 'glider' then
+											self.player_state.gameOver = false
+										end
+									end
+					    		end
+
+					    		if self.player_state.gameOver then
+					    			evolution_phase = evolution_phases + 1
+					    		end
+				    		elseif not self.player_state.noMoreRounds then
+								evolution_phase = evolution_phase + 1
+							end
 						end
 					end
 				end
