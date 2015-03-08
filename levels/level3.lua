@@ -1,23 +1,29 @@
 placeable_utils = require 'placeables'
 watcher = require 'watcher'
-wall = require 'wall'
+glider = require 'glider'
+diverter = require 'diverter'
+
 exports = {}
 
 function exports.setup(grid_state)
 	assert(not grid_state.is_setup)
 
-	grid_state:add_object(watcher(6, 10, directions.UP))
-	grid_state:add_object(glider(14, 1, directions.LEFT))
-	grid_state:add_object(watcher(14, 6, directions.RIGHT))
+	grid_state:add_tile(diverter(1, 1, directions.DOWN))
+	grid_state:add_tile(diverter(2, 2, directions.DOWN))
+	grid_state:add_tile(diverter(3, 3, directions.DOWN))
+
+	grid_state:add_object(watcher(2, 4, directions.LEFT))
+
 	grid_state.is_setup = true
 
 	local placeable = {}
-	placeable_utils.add_placeableblock(placeable, 1,6,3,5)
+	placeable_utils.add_placeableblock(placeable, 5, 1, 2, 3)
+	placeable_utils.add_placeableblock(placeable, 1, 9, 3, 1)
 	grid_state.placeable = placeable_utils.get_single_cell_list(placeable)
 end
 
-exports.grid_width = 15
-exports.grid_height = 15
-exports.number_of_rounds = 4
+exports.grid_width = 10
+exports.grid_height = 10
+exports.number_of_rounds = 3
 
 return exports
