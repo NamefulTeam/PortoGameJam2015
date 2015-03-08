@@ -71,6 +71,7 @@ function exports(level_description)
 				active_screen.set(game_over_view(level_description))
 			end
 
+			instance.player_state.noMoreGliders = true
 			instance.grid_state.mode = instance.grid_state.MODE_EVOLUTION
 			tick_time = 0
 			evolution_phase = 1

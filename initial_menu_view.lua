@@ -12,7 +12,7 @@ function exports()
 	local levelSelectButton = love.graphics.newImage('initial_menu/level_select.png')
 	local endGameButton = love.graphics.newImage('initial_menu/exit.png')
 	local newGameX = 470
-	local newGameY = 200
+	local newGameY = 300
 	local newGameWidth = 300
 	local newGameHeight = 100
 	local gap = 10
