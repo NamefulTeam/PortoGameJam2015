@@ -55,11 +55,13 @@ local function exports(x, y, direction)
 				local x = self.x + dx
 				local y = self.y + dy
 
-				local object = grid:get_object_at(x, y)
-				if object ~= nil and not object.isDead then
-					object:suffer_explosion(grid, pending_events)
-				else
-					grid:set_space_at(x, y, true)
+				if grid:in_grid(x, y) then
+					local object = grid:get_object_at(x, y)
+					if object ~= nil and not object.isDead then
+						object:suffer_explosion(grid, pending_events)
+					else
+						grid:set_space_at(x, y, true)
+					end
 				end
 			end
 		end
