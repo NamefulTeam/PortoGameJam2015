@@ -10,6 +10,8 @@ game_over_view = require 'game_over_view'
 game_won = require 'game_won'
 placeable_utils = require 'placeables'
 
+local sounds = require 'sounds'
+
 grid_normal_color = {180, 230, 255}
 grid_block_color = {100, 200, 250}
 grid_line_width = 0.5
@@ -66,6 +68,7 @@ function exports(level_description)
 	end
 
 	local function processGoButtonClicked(grid_state, player_state)
+		love.audio.play(sounds.blipSource)
 		if not player_state.won then
 			if player_state.gameOver then
 				active_screen.set(game_over_view(level_description))
@@ -101,6 +104,7 @@ function exports(level_description)
 	end
 
 	local function levelWon()
+		--love.audio.play(sounds.winSource)
 		instance.goButtonImage = love.graphics.newImage( "placeholders/next.png" )
 	end
 
@@ -262,6 +266,7 @@ function exports(level_description)
 				processGoButtonClicked(self.grid_state, self.player_state)
 			end
 			if mouse_x >= speedButtonX - 4 and mouse_y >= speedButtonY and mouse_y < speedButtonY + 32 then
+				love.audio.play(sounds.blipSource)
 				if mouse_x <= speedButtonX + 36 then
 					game_speed = 0
 				elseif mouse_x <= speedButtonX + 76 then
