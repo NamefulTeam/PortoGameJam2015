@@ -36,6 +36,7 @@ local function exports(x, y, direction)
 					found_object:suffer_explosion(grid, pending_events, self.x, self.y)
 				end)
 			elseif found_object.type == 'watcher' then
+				found_object.direction = directions.invert(self.direction)
 				self:schedule_death(pending_events)
 			elseif found_object.type == 'wall' then
 				self:schedule_death(pending_events)
