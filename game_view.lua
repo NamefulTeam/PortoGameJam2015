@@ -107,11 +107,18 @@ function exports(level_description)
 	instance.player_state = player_state(level_description.number_of_rounds)
 	level_description.setup(instance.grid_state)
 
+	local goButtonWidth = 150
+    local goButtonHeight = 50
+
+	instance.menuButtonImage = love.graphics.newImage("placeholders/menu.png")
+    local menuButtonY = love.window.getHeight()-yoffset-50
+
+    instance.retryButtonImage = love.graphics.newImage("placeholders/retry.png")
+    local retryButtonY = menuButtonY - goButtonHeight - 20
+
     instance.goButtonImage = love.graphics.newImage( "placeholders/goButton.png" )
     local goButtonX = love.window.getWidth()-225
-    local goButtonY = love.window.getHeight()-yoffset-50
-    local goButtonWidth = 150
-    local goButtonHeight = 50
+    local goButtonY = retryButtonY - goButtonHeight - 20
 
     local background = love.graphics.newImage('background/background_light.png')
     instance.roundImage = love.graphics.newImage("placeholders/round.png")
@@ -197,6 +204,8 @@ function exports(level_description)
 	    	love.graphics.setColor(255, 255, 255)
 			love.graphics.draw(self.goButtonImage, goButtonX, goButtonY)
 		end
+			love.graphics.draw(self.retryButtonImage, goButtonX, retryButtonY)
+			love.graphics.draw(self.menuButtonImage, goButtonX, menuButtonY)
 
 		-- rounds
 		for i = 1, self.player_state.numberOfRounds, 1 do
@@ -247,6 +256,13 @@ function exports(level_description)
 					end
 				elseif mouse_x > goButtonX and mouse_x <= goButtonX + goButtonWidth and mouse_y > goButtonY and mouse_y <= goButtonY + goButtonHeight and not lastFrameMouseClicked then
 					processGoButtonClicked(self.grid_state, self.player_state)
+				elseif mouse_x > goButtonX and mouse_x <= goButtonX + goButtonWidth and mouse_y > retryButtonY and mouse_y <= retryButtonY + goButtonHeight and not lastFrameMouseClicked then
+					active_screen.set(game_view(level_description))
+					return
+				elseif mouse_x > goButtonX and mouse_x <= goButtonX + goButtonWidth and mouse_y > menuButtonY and mouse_y <= menuButtonY + goButtonHeight and not lastFrameMouseClicked then
+					initial_menu_view = require 'initial_menu_view'
+					active_screen.set(initial_menu_view())
+					return
 				end
 			end
 		else

@@ -10,6 +10,10 @@ function add_level(level_name)
 	level.id = #levels
 end
 
+function exports.get_levels()
+	return levels
+end
+
 function exports.first_level()
 	return levels[1]
 end
