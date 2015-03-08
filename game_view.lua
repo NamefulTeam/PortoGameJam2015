@@ -244,15 +244,12 @@ function exports(level_description)
 
 					if gliderPlaced then
 						if lastGlider.x == target_x and lastGlider.y == target_y and not lastFrameMouseClicked then
-							print('rotate')
 							gliderClicked()
 						elseif self.grid_state:get_object_at(target_x, target_y) == nil then
-							print('move')
 							lastGlider.x = target_x
 							lastGlider.y = target_y
 						end
 					elseif self.grid_state:get_object_at(target_x, target_y) == nil and not lastFrameMouseClicked then
-						print('place')
 						lastGlider = glider(target_x, target_y, directions.DOWN)
 						self.grid_state:add_object(lastGlider)
 						gliderPlaced = true
