@@ -61,8 +61,8 @@ function exports(level_description)
 	instance.grid_state = grid_state(xcount, ycount)
 	instance.grid_state.mode = instance.grid_state.MODE_SIGNAL
 
-	local function gliderClicked()
-		lastGlider.direction = directions.rotate_clockwise(lastGlider.direction)
+	local function gliderClicked(current_object)
+		current_object.direction = directions.rotate_clockwise(current_object.direction)
 	end
 
 	local function processGoButtonClicked(grid_state, player_state)
@@ -284,14 +284,10 @@ function exports(level_description)
 					not self.grid_state:get_space_at(target_x, target_y) and
 					placeable_utils.contains(self.grid_state.placeable,target_x,target_y) then
 
-					if self.player_state.noMoreGliders then
-						if lastGlider.x == target_x and lastGlider.y == target_y and not lastFrameMouseClicked then
-							gliderClicked()
-						elseif self.grid_state:get_object_at(target_x, target_y) == nil then
-							lastGlider.x = target_x
-							lastGlider.y = target_y
-						end
-					elseif self.grid_state:get_object_at(target_x, target_y) == nil and not lastFrameMouseClicked then
+					local clicked_object = self.grid_state:get_object_at(target_x, target_y)
+					if clicked_object ~= nil and not lastFrameMouseClicked then
+						gliderClicked(clicked_object)
+					elseif not lastFrameMouseClicked and not self.player_state.noMoreGliders then
 						lastGlider = glider(target_x, target_y, directions.DOWN)
 						self.grid_state:add_object(lastGlider)
 						self.player_state.placeGlider()

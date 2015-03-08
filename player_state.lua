@@ -20,6 +20,7 @@ function exports(glider_num)
 		if player.numberOfGliders < glider_num then
 			player.numberOfGliders = player.numberOfGliders + 1
 		end
+		player.noMoreGliders = false
 	end
 
 	return player
