@@ -5,21 +5,23 @@
 You are in the command of the Gliders (infamous computer virus) and your purpose is to cause a glitch in every computer system you can find.
 
 However, every system has its Watchers (anti-virus) who will kill your Gliders and heal the damage caused. 
-They are only destroyed by Glider's explosions (which is caused when two collide). 
+They are only destroyed by Glider explosions (which are caused when two collide). 
 Moreover, when a Watcher dies, a new Glider is created. This may cause chain explosions.
 
-The goal of the game is to corrupt each system, by eliminating all the Watchers.
-When you have successfully cause glitches in every level, you win the game.
+The goal of the game is to corrupt every system, by eliminating all the Watchers.
+When you have successfully caused glitches in every level, you win the game.
 
 --- MECHANICS / HOW TO PLAY ---
 
-When a level starts, you have a limit number of Gliders you can place and only some places (white squares) are eligable to insert Gliders.
-You can delete already placed Gliders and insert them in a new slot. However, you cannot move, you must delete first.
+When a level starts, you have a maximum number of Gliders you can place and you may do so only in certain locations (white squares).
+You can delete your previously placed Gliders and insert them in a new slot.
 Furthermore, you can also rotate them, in order to determine in which direction they will go.
 
-To place Glider click with the left mouse button in an available spot.
-To delete a already placed Glider right click on it.
-To rotate just left click on a existing Glider.
+To place a Glider click the desired position with the left mouse button.
+To delete a already placed Glider, right click on it.
+To rotate just left click on an existing Glider.
 
-After this phase, if you are satisfied with how the board looks, just press Submit and enjoy!
+You can not move, delete or rotate Gliders outside white squares.
+
+Once you are satisfied with how the board looks, just press Submit and enjoy!
 You can always retry the level whenever you want or return to the main menu.
