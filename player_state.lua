@@ -3,6 +3,7 @@ function exports(round_num)
 	local player = {}
 	player.numberOfRounds = round_num
 	player.gameOver = false
+	player.won = false
 
 	function player:endRound()
 

@@ -8,6 +8,7 @@ player_state = require 'player_state'
 stack_trace = require 'stackTrace'
 active_screen = require 'active_screen'
 game_over_view = require 'game_over_view'
+game_won = require 'game_won'
 
 grid_normal_color = {180, 230, 255}
 grid_block_color = {100, 200, 250}
@@ -68,15 +69,23 @@ function exports(level_description)
 	end
 
 	local function processGoButtonClicked(grid_state, player_state)
-		player_state:endRound()
+		if not player_state.won then
+			player_state:endRound()
 
-		gliderPlaced = false
-		instance.grid_state.mode = instance.grid_state.MODE_EVOLUTION
-		tick_time = 0
-		evolution_phase = 1
+			gliderPlaced = false
+			instance.grid_state.mode = instance.grid_state.MODE_EVOLUTION
+			tick_time = 0
+			evolution_phase = 1
+		else
+			if level_list.next_level(level_description) ~= nil then
+				active_screen.set(game_view(level_list.next_level(level_description)))
+			else
+				active_screen.set(game_won())
+			end
+		end
 	end
 
-	local function hasWon(grid_state)
+	local function hasWon(grid_state, player_state)
 		local won = true
 
 		for x = 1, xcount, 1 do
@@ -87,17 +96,13 @@ function exports(level_description)
 			end
     	end
 
+    	player_state.won = won
+
     	return won
 	end
 
 	local function levelWon()
 		instance.goButtonImage = love.graphics.newImage( "placeholders/next.png" )
-	end
-
-	instance.player_state = player_state(round_num)
-
-	for watcherI=1,1 do
-		instance.grid_state:add_object(watcher(math.random(1,xcount), math.random(1,ycount), directions.DOWN))
 	end
 
 	instance.player_state = player_state(level_description.number_of_rounds)
@@ -232,7 +237,7 @@ function exports(level_description)
 					self.grid_state.mode = instance.grid_state.MODE_SIGNAL
 					current_object = nil
 
-					if hasWon(self.grid_state) then
+					if hasWon(self.grid_state, self.player_state) then
 						levelWon()
 						return
 					end
