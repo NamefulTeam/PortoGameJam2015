@@ -122,7 +122,8 @@ function exports(level_description)
 
     local background = love.graphics.newImage('background/background_light.png')
     instance.roundImage = love.graphics.newImage("placeholders/round.png")
-    local roundX = (xcount-0.7) * grid_unit_size + xoffset
+    local roundX = 1220
+    local roundY = 75
     local roundWidth = 24
 
     local signalImage = love.graphics.newImage('header/signal.png')
@@ -133,9 +134,9 @@ function exports(level_description)
 		love.graphics.draw(background, 0, 0)
 
 		if instance.grid_state.mode == instance.grid_state.MODE_SIGNAL then
-			love.graphics.draw(signalImage, xoffset, yoffset - 50)
+			love.graphics.draw(signalImage, 10, 10)
 		else
-			love.graphics.draw(processingImage, xoffset, yoffset - 50)
+			love.graphics.draw(processingImage, 10, 10)
 		end
 
 		if self.grid_state.mode == self.grid_state.MODE_SIGNAL then
@@ -209,7 +210,7 @@ function exports(level_description)
 
 		-- rounds
 		for i = 1, self.player_state.numberOfRounds, 1 do
-			love.graphics.draw(self.roundImage, roundX - (roundWidth+2)*(i-1), yoffset - 35)
+			love.graphics.draw(self.roundImage, roundX - (roundWidth+2)*(i-1), roundY)
 		end
 	end
 
