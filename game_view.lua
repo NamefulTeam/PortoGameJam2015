@@ -73,9 +73,6 @@ function exports(level_description)
 				active_screen.set(game_over_view(level_description))
 			end
 
-			player_state:endRound()
-
-			gliderPlaced = false
 			instance.grid_state.mode = instance.grid_state.MODE_EVOLUTION
 			tick_time = 0
 			evolution_phase = 1
@@ -218,7 +215,7 @@ function exports(level_description)
 			love.graphics.draw(self.menuButtonImage, goButtonX, menuButtonY)
 
 		-- rounds
-		for i = 1, self.player_state.numberOfRounds, 1 do
+		for i = 1, self.player_state.numberOfGliders, 1 do
 			love.graphics.draw(self.roundImage, roundX - (roundWidth+2)*(i-1), roundY)
 		end
 	end
@@ -266,7 +263,8 @@ function exports(level_description)
 					elseif self.grid_state:get_object_at(target_x, target_y) == nil and not lastFrameMouseClicked then
 						lastGlider = glider(target_x, target_y, directions.DOWN)
 						self.grid_state:add_object(lastGlider)
-						gliderPlaced = true
+						self.player_state.placeGlider()
+						gliderPlaced = self.player_state.noMoreGliders
 					end
 				elseif mouse_x > goButtonX and mouse_x <= goButtonX + goButtonWidth and mouse_y > goButtonY and mouse_y <= goButtonY + goButtonHeight and not lastFrameMouseClicked and not self.player_state.gameOver then
 					processGoButtonClicked(self.grid_state, self.player_state)
@@ -295,53 +293,43 @@ function exports(level_description)
 				end
 			elseif tick_time >= 3 then
 				tick_time = 0
-				if evolution_phase > evolution_phases then
 
-		    		self.grid_state.mode = instance.grid_state.MODE_SIGNAL
-					current_object = nil
+				if hasWon(self.grid_state, self.player_state) then
+					levelWon()
+					return
+				end
 
-					if hasWon(self.grid_state, self.player_state) then
-						levelWon()
-						return
-					end
-
-					if self.player_state.gameOver then
-						return
-					end
+				if self.player_state.gameOver then
+					return
+				end
+				
+				if current_object == nil then
+					current_object = self.grid_state.first_object
+				end
+				if current_object == nil then
+					evolution_phase = evolution_phase + 1
 				else
+					current_object:update(self.grid_state, pending_events)
+					--erase cycle
+					self:kill_dead_objects()
+					current_object = current_object.next
 					if current_object == nil then
-						current_object = self.grid_state.first_object
-					end
-					if current_object == nil then
-						evolution_phase = evolution_phase + 1
-					else
-						current_object:update(self.grid_state, pending_events)
-						--erase cycle
-						self:kill_dead_objects()
-						current_object = current_object.next
-						if current_object == nil then
 
-							if self.player_state.noMoreRounds then 
+						if self.player_state.noMoreGliders then 
 
-								self.player_state.gameOver = true
+							self.player_state.gameOver = true
 
-								for x = 1, xcount, 1 do
-									for y = 1, ycount, 1 do
-										if self.grid_state:get_object_at(x, y) ~= nil and self.grid_state:get_object_at(x, y).type == 'glider' then
-											self.player_state.gameOver = false
-										end
+							for x = 1, xcount, 1 do
+								for y = 1, ycount, 1 do
+									if self.grid_state:get_object_at(x, y) ~= nil and self.grid_state:get_object_at(x, y).type == 'glider' then
+										self.player_state.gameOver = false
 									end
-					    		end
-
-					    		if self.player_state.gameOver then
-					    			evolution_phase = evolution_phases + 1
-					    		end
-				    		elseif not self.player_state.noMoreRounds then
-								evolution_phase = evolution_phase + 1
-							end
+								end
+				    		end
 						end
 					end
 				end
+			
 			else
 				tick_time = tick_time + 1
 			end

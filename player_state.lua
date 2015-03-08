@@ -1,17 +1,17 @@
-function exports(round_num)
+function exports(glider_num)
 
 	local player = {}
-	player.numberOfRounds = round_num
+	player.numberOfGliders = glider_num
 	player.gameOver = false
 	player.won = false
-	player.noMoreRounds = false
+	player.noMoreGliders = false
 
-	function player:endRound()
+	function player:placeGlider()
 
-		player.numberOfRounds = player.numberOfRounds - 1
+		player.numberOfGliders = player.numberOfGliders - 1
 
-		if player.numberOfRounds == 0 then
-			player.noMoreRounds = true
+		if player.numberOfGliders == 0 then
+			player.noMoreGliders = true
 		end
 	end
 
