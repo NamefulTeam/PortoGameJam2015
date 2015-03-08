@@ -61,6 +61,8 @@ function exports(level_description)
 
 	local gliderPlaced = false
 
+	local pending_events = {}
+
 	instance.grid_state = grid_state(xcount, ycount)
 	instance.grid_state.mode = instance.grid_state.MODE_SIGNAL
 
@@ -195,6 +197,16 @@ function exports(level_description)
 		end
 	end
 
+	function instance:kill_dead_objects()
+		local obj = self.grid_state.first_object
+		while obj ~= nil do
+			if obj.isDead then
+				self.grid_state:delete_object(obj)
+			end
+			obj = obj.next
+		end
+	end
+
 	function instance:update()
 		mouse_x, mouse_y = love.mouse.getPosition()
 
@@ -231,7 +243,20 @@ function exports(level_description)
 				end
 			end
 		else
-			if tick_time >= 3 then
+			if #pending_events > 0 then
+				if tick_time >= 8 then
+					tick_time = 0
+
+					local next_event = pending_events[1]
+
+					table.remove(pending_events, 1)
+
+					next_event()
+					self:kill_dead_objects()
+				else
+					tick_time = tick_time + 1
+				end
+			elseif tick_time >= 3 then
 				tick_time = 0
 				if evolution_phase > evolution_phases then
 					self.grid_state.mode = instance.grid_state.MODE_SIGNAL
@@ -250,16 +275,12 @@ function exports(level_description)
 					if current_object == nil then
 						current_object = self.grid_state.first_object
 					end
-					if current_object ~= nil then
-						current_object:update(self.grid_state)
+					if current_object == nil then
+						evolution_phase = evolution_phase + 1
+					else
+						current_object:update(self.grid_state, pending_events)
 						--erase cycle
-						local obj = self.grid_state.first_object
-						while obj ~= nil do
-							if obj.isDead then
-								self.grid_state:delete_object(obj)
-							end
-							obj = obj.next
-						end
+						self:kill_dead_objects()
 						current_object = current_object.next
 						if current_object == nil then
 							evolution_phase = evolution_phase + 1
