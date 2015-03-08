@@ -33,7 +33,7 @@ local function exports(x, y, direction)
 				table.insert(pending_events, function ()
 					-- Blow up
 					self.isDead = true
-					found_object:suffer_explosion(grid, pending_events)
+					found_object:suffer_explosion(grid, pending_events, self.x, self.y)
 				end)
 			elseif found_object.type == 'watcher' then
 				instance.isDead = true
@@ -58,7 +58,7 @@ local function exports(x, y, direction)
 				if grid:in_grid(x, y) then
 					local object = grid:get_object_at(x, y)
 					if object ~= nil and not object.isDead then
-						object:suffer_explosion(grid, pending_events)
+						object:suffer_explosion(grid, pending_events, self.x, self.y)
 					else
 						grid:set_space_at(x, y, true)
 					end
@@ -67,7 +67,7 @@ local function exports(x, y, direction)
 		end
 	end
 
-	function instance:suffer_explosion(grid, pending_events)
+	function instance:suffer_explosion(grid, pending_events, explosion_center_x, explosion_center_y)
 		instance.highlight_death = true
 		table.insert(pending_events, function()
 			instance.isDead = true
