@@ -62,10 +62,25 @@ local function exports(x, y, direction)
 		end
 	end
 
-	function instance:suffer_explosion(grid, pending_events)
+	function instance:compute_relative_direction(other_x, other_y)
+		assert(self.x ~= other_x or self.y ~= other_y)
+
+		if self.y < other_y and self.x <= other_x then
+			return directions.UP
+		elseif self.x > other_x and self.y <= other_y then
+			return directions.RIGHT
+		elseif self.y > other_y and self.x >= other_x then
+			return directions.DOWN
+		else
+			return directions.LEFT
+		end
+	end
+
+	function instance:suffer_explosion(grid, pending_events, explosion_center_x, explosion_center_y)
 		self.highlight_death = true
 		table.insert(pending_events, function()
-			grid:replace_object(self, glider(self.x, self.y, self.direction))
+			self.isDead = true
+			grid:add_object(glider(self.x, self.y, self:compute_relative_direction(explosion_center_x, explosion_center_y)))
 		end)
 	end
 

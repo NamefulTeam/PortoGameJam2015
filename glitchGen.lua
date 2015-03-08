@@ -38,7 +38,7 @@ function glitch(x,y)
 end
 
 noiseFileIndex = 2000
-contents, size = love.filesystem.read( "Carefree.mp3", 10000)
+contents, size = love.filesystem.read( "glitchbase.ogg", 10000)
 function glitchSquare(x,y,width,height)
 	if(noiseFileIndex + 2 > size)then
 		noiseFileIndex = 2000
