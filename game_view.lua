@@ -265,7 +265,18 @@ function exports(level_description)
 					game_speed = FAST_SPEED
 				end
 			end
+
+			if mouse_x > goButtonX and mouse_x <= goButtonX + goButtonWidth and mouse_y > retryButtonY and mouse_y <= retryButtonY + goButtonHeight then
+				active_screen.set(game_view(level_description))
+				return
+			elseif mouse_x > goButtonX and mouse_x <= goButtonX + goButtonWidth and mouse_y > menuButtonY and mouse_y <= menuButtonY + goButtonHeight then
+				initial_menu_view = require 'initial_menu_view'
+				active_screen.set(initial_menu_view())
+				return
+			end
 		end
+
+
 
 		if self.grid_state.mode == instance.grid_state.MODE_SIGNAL then
 		
@@ -294,13 +305,6 @@ function exports(level_description)
 					end
 				elseif mouse_x > goButtonX and mouse_x <= goButtonX + goButtonWidth and mouse_y > goButtonY and mouse_y <= goButtonY + goButtonHeight and not lastFrameMouseClicked and not self.player_state.gameOver then
 					processGoButtonClicked(self.grid_state, self.player_state)
-				elseif mouse_x > goButtonX and mouse_x <= goButtonX + goButtonWidth and mouse_y > retryButtonY and mouse_y <= retryButtonY + goButtonHeight and not lastFrameMouseClicked then
-					active_screen.set(game_view(level_description))
-					return
-				elseif mouse_x > goButtonX and mouse_x <= goButtonX + goButtonWidth and mouse_y > menuButtonY and mouse_y <= menuButtonY + goButtonHeight and not lastFrameMouseClicked then
-					initial_menu_view = require 'initial_menu_view'
-					active_screen.set(initial_menu_view())
-					return
 				end
 			end
 		else
