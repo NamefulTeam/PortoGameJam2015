@@ -65,7 +65,8 @@ local function exports(x, y, direction)
 	function instance:suffer_explosion(grid, pending_events)
 		self.highlight_death = true
 		table.insert(pending_events, function()
-			grid:replace_object(self, glider(self.x, self.y, self.direction))
+			self.isDead = true
+			grid:add_object(glider(self.x, self.y, self.direction))
 		end)
 	end
 

@@ -29,14 +29,21 @@ local function exports(x, y, direction)
 				self.x = next_x
 				self.y = next_y
 			elseif found_object.type == 'glider' then
-				-- Blow up
-				self:explode(grid, pending_events)
+				self.highlight_death = true
+				table.insert(pending_events, function ()
+					-- Blow up
+					self.isDead = true
+					found_object:suffer_explosion(grid, pending_events)
+				end)
 			elseif found_object.type == 'watcher' then
 				instance.isDead = true
 			end
 		else
 			grid:set_space_at(self.x, self.y, true)
-			instance.isDead = true
+			self.highlight_death = true
+			table.insert(pending_events, function()
+				instance.isDead = true
+			end)
 		end
 	end
 
