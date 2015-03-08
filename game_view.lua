@@ -56,8 +56,6 @@ function exports(level_description)
 	local xoffset = (available_width - (xcount * grid_unit_size)) / 2
 	local yoffset = (available_height - (ycount * grid_unit_size)) / 2
 
-	local gliderPlaced = false
-
 	local pending_events = {}
 
 	instance.grid_state = grid_state(xcount, ycount)
@@ -278,7 +276,6 @@ function exports(level_description)
 				if placeable_utils.contains(self.grid_state.placeable,target_x,target_y) and self.grid_state:get_object_at(target_x, target_y) ~= nil then
 					self.grid_state:delete_object(self.grid_state:get_object_at(target_x, target_y))
 					lastGlider = nil
-					gliderPlaced = false
 					self.player_state.removeGlider()
 				end
 			end
@@ -287,7 +284,7 @@ function exports(level_description)
 					not self.grid_state:get_space_at(target_x, target_y) and
 					placeable_utils.contains(self.grid_state.placeable,target_x,target_y) then
 
-					if gliderPlaced then
+					if self.player_state.noMoreGliders then
 						if lastGlider.x == target_x and lastGlider.y == target_y and not lastFrameMouseClicked then
 							gliderClicked()
 						elseif self.grid_state:get_object_at(target_x, target_y) == nil then
@@ -298,7 +295,6 @@ function exports(level_description)
 						lastGlider = glider(target_x, target_y, directions.DOWN)
 						self.grid_state:add_object(lastGlider)
 						self.player_state.placeGlider()
-						gliderPlaced = self.player_state.noMoreGliders
 					end
 				elseif mouse_x > goButtonX and mouse_x <= goButtonX + goButtonWidth and mouse_y > goButtonY and mouse_y <= goButtonY + goButtonHeight and not lastFrameMouseClicked and not self.player_state.gameOver then
 					processGoButtonClicked(self.grid_state, self.player_state)
