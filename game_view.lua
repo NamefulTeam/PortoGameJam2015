@@ -234,10 +234,17 @@ function exports(level_description)
 
 		if self.grid_state.mode == instance.grid_state.MODE_SIGNAL then
 		
-			if mouseClicked then
+			target_x = math.floor((mouse_x - xoffset) / grid_unit_size) + 1
+			target_y = math.floor((mouse_y - yoffset) / grid_unit_size) + 1
 
-				target_x = math.floor((mouse_x - xoffset) / grid_unit_size) + 1
-				target_y = math.floor((mouse_y - yoffset) / grid_unit_size) + 1
+			if love.mouse.isDown("r") then
+				if gliderPlaced and lastGlider.x == target_x and lastGlider.y == target_y then
+					self.grid_state:delete_object(lastGlider)
+					lastGlider = nil
+					gliderPlaced = false
+				end
+			end
+			if mouseClicked then
 				if self.grid_state:in_grid(target_x, target_y) and 
 					not self.grid_state:get_space_at(target_x, target_y) and
 					placeable_utils.contains(self.grid_state.placeable,target_x,target_y) then
